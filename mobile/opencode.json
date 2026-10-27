@@ -1,0 +1,27 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "opencode/big-pickle",
+  "small_model": "opencode/ling-flash-free",
+  "instructions": ["constitution.md", "memoria.md"],
+  "agent": {
+    "plan": { "model": "opencode/nemotron-3-ultra-free" },
+    "build": { "model": "opencode/nemotron-3-lightning-free" },
+    "spec-writer": { "model": "opencode/nemotron-3-ultra-free" },
+    "dev-expo": { "model": "opencode/nemotron-3-lightning-free" },
+    "qa-mobile": { "model": "opencode/ling-flash-free" },
+    "revisor-constitucion": { "model": "opencode/big-pickle" }
+  },
+  "permission": {
+    "skill": { "*": "allow" },
+    "edit": "ask",
+    "bash": {
+      "*": "ask",
+      "git status*": "allow",
+      "git diff*": "allow",
+      "git log*": "allow",
+      "ls*": "allow",
+      "node --version": "allow",
+      "npm --version": "allow"
+    }
+  }
+}

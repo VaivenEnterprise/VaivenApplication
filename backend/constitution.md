@@ -1,0 +1,160 @@
+# Constitución del Backend — VAIVÉN
+
+> **Versión 1.0.0** · Ratificada el 2026-10-26 · Proyecto: `backend/` (Go + MongoDB)
+>
+> Esta es la máxima autoridad técnica del backend. Si `AGENTS.md`, `memoria.md`, `spec.md`, `plan.md`, `tasks.md`, un agente o una skill la contradicen, **gana la constitución** y el otro archivo debe corregirse.
+> La constitución del móvil (`../mobile/constitution.md`) comparte los Artículos IV y V; ambas deben mantenerse idénticas en esos puntos.
+
+---
+
+## 1. Propósito y alcance
+
+VAIVÉN es una plataforma móvil de préstamo y renta de objetos entre personas, que opera en México y expresa todos los importes en pesos mexicanos (MXN). Contexto completo en `../docs/VAIVEN_Idea_y_Objetivo.pdf`.
+
+El backend es una **API REST en Go** con persistencia en **MongoDB**. Es la única fuente de verdad de los datos: la app móvil nunca accede a la base de datos.
+
+**Alcance de esta constitución:** arquitectura, reglas técnicas y forma de trabajo. **No** define funcionalidad de negocio (usuarios, objetos, solicitudes, chat, etc.); eso se especifica en specs posteriores (`specs/002-*` en adelante) sin contradecir lo aquí escrito.
+
+---
+
+## 2. Principios no negociables
+
+### Art. I — Spec primero (Spec Driven Development)
+1. Ningún código se escribe sin una `spec.md` aprobada, un `plan.md` y un `tasks.md` de la misma carpeta `specs/NNN-nombre/`.
+2. El orden es siempre: **constitución → spec → plan → tasks → implementación → revisión**.
+3. Si durante la implementación se descubre que la spec es incorrecta, se **corrige la spec primero** y luego el código.
+4. Cada tarea cambia un conjunto pequeño y verificable de archivos y se marca como hecha solo si cumple sus criterios de aceptación.
+
+### Art. II — MongoDB es la única base de datos (NoSQL)
+1. La persistencia es **exclusivamente MongoDB** (versión 7 o superior) mediante el driver oficial `go.mongodb.org/mongo-driver/v2`. Prohibido introducir bases relacionales, ORMs o capas SQL.
+2. MongoDB se ejecuta como **replica set** (de un nodo en desarrollo) para poder usar transacciones cuando una spec las requiera.
+3. El diseño de datos sigue los patrones de documentos de la sección 6 (incrustar vs. referenciar, instantáneas, índices declarados en código).
+
+### Art. III — Clean Architecture y regla de dependencia
+1. Capas: `domain` → `usecase` → `adapter` (http, mongo) → `cmd`. **Las dependencias solo apuntan hacia adentro.**
+2. `domain` y `usecase` **no importan** `net/http`, `chi`, `bson`, `mongo` ni ningún paquete de infraestructura.
+3. Los puertos (interfaces) los declara la capa que los consume (`usecase`); los adaptadores los implementan.
+4. Los handlers solo traducen HTTP ⇄ casos de uso; la lógica de negocio vive en `usecase`/`domain`.
+
+### Art. IV — Contrato de API estable y compartido con el móvil
+1. API REST JSON bajo el prefijo `/api/v1`. Endpoints de infraestructura (`/healthz`, `/readyz`) fuera del prefijo.
+2. Campos JSON en `camelCase`; fechas en ISO-8601 UTC (`2026-10-26T15:00:00Z`); identificadores como cadenas.
+3. Errores siempre con este formato único:
+   ```json
+   { "error": { "code": "validation_failed", "message": "texto legible en español",
+                "details": [{ "field": "email", "issue": "formato inválido" }],
+                "requestId": "01J..." } }
+   ```
+   Códigos permitidos: `validation_failed`, `unauthorized`, `forbidden`, `not_found`, `conflict`, `rate_limited`, `internal_error`, `service_unavailable`.
+4. Listas paginadas por cursor: `{ "items": [...], "nextCursor": "..." | null }`.
+5. Cada respuesta incluye `X-Request-Id`. Si la petición trae uno válido (≤ 64 caracteres alfanuméricos y guiones) se reutiliza; si no, se genera. Los códigos `network_error` y `timeout` son propios del cliente móvil y el servidor nunca los emite.
+6. Todo endpoint se documenta en `api/openapi.yaml` **antes** de implementarse. Un cambio incompatible exige nueva versión de ruta.
+
+### Art. V — Dinero, fechas e idioma
+1. Moneda única: **MXN**. No existe selección de moneda ni conversión.
+2. Los importes se guardan y transmiten como **enteros en centavos** (`int64`, campo con sufijo `Cents`, p. ej. `amountCents`). Prohibido `float` para dinero.
+3. Todas las fechas se almacenan y transmiten en **UTC**; la presentación en zona horaria local es responsabilidad del cliente.
+4. Mensajes de error y textos visibles al usuario en **español (es-MX)**; identificadores de código, logs y nombres técnicos en inglés.
+5. VAIVÉN **no ejecuta cobros ni verifica pagos**: el backend solo registra lo acordado y lo reportado.
+
+### Art. VI — Seguridad y privacidad por defecto
+1. Secretos solo por variables de entorno; nunca en el repositorio. Se mantiene un `.env.example` sin valores reales.
+2. Toda entrada se valida en la frontera HTTP (`validator/v10`) y se vuelve a validar en el dominio cuando proteja invariantes.
+3. Contraseñas con `argon2id` (o `bcrypt` con costo ≥ 12 si no hay alternativa); jamás en logs ni respuestas.
+4. Datos sensibles (ubicación exacta, conversaciones, evidencias) solo son accesibles a las personas autorizadas; las respuestas públicas exponen únicamente el mínimo necesario.
+5. Los logs **no contienen** datos personales, tokens ni cuerpos de petición completos.
+6. CORS con lista explícita de orígenes; límites de tamaño de cuerpo; tiempos de espera en servidor y cliente HTTP.
+
+### Art. VII — Pruebas y calidad
+1. Toda tarea con lógica incluye pruebas. Mínimo **80 %** de cobertura en `domain` y `usecase`.
+2. Pruebas unitarias sin infraestructura; pruebas de integración con MongoDB real (testcontainers) para repositorios e índices.
+3. `gofmt`, `go vet` y `golangci-lint` deben pasar sin advertencias antes de dar una tarea por hecha.
+4. Commits con *Conventional Commits* (`feat:`, `fix:`, `docs:`, `test:`, `chore:`, `refactor:`), uno por tarea.
+
+### Art. VIII — Simplicidad y dependencias mínimas
+1. Se prefiere la biblioteca estándar. Una dependencia nueva exige justificación en `plan.md` y un registro en `memoria.md`.
+2. Prohibido construir abstracciones "por si acaso": solo lo que una spec vigente necesita.
+3. Funciones cortas, un propósito por paquete, nombres explícitos.
+
+### Art. IX — Observabilidad
+1. Logs estructurados con `log/slog` (JSON en producción) y un `requestId` por petición, devuelto en el encabezado `X-Request-Id`.
+2. `/healthz` indica que el proceso vive; `/readyz` verifica la conexión a MongoDB.
+3. Cierre ordenado (*graceful shutdown*) ante `SIGINT`/`SIGTERM`.
+
+### Art. X — Desarrollo asistido con OpenCode y modelos gratuitos
+1. Este proyecto se desarrolla **100 % con OpenCode** y **modelos gratuitos**. Ninguna herramienta o modelo de pago es requisito.
+2. Los modelos se asignan en `opencode.json` (un solo lugar). Los identificadores gratuitos rotan: al cambiarlos se registra en `memoria.md`.
+3. Como los modelos gratuitos tienen menos capacidad, **las tareas se escriben pequeñas y explícitas**: archivos exactos, criterios de aceptación verificables y contexto mínimo.
+4. Los agentes operan con **permisos mínimos** (ver `.opencode/agents/`). Un agente nunca ejecuta comandos destructivos ni modifica `constitution.md` sin aprobación humana.
+5. Una persona revisa y aprueba cada spec, plan y conjunto de tareas antes de implementar.
+
+### Art. XI — Gobernanza y enmiendas
+1. Cambiar la constitución requiere: propuesta escrita, registro en `memoria.md` (sección *Decisiones*), incremento de versión y revisión de coherencia de todos los archivos.
+2. Versionado: **MAJOR** cambia o elimina un principio; **MINOR** agrega un principio o sección; **PATCH** aclara redacción.
+
+---
+
+## 3. Stack tecnológico fijo
+
+| Área | Decisión |
+|---|---|
+| Lenguaje | Go 1.24 o superior |
+| Router HTTP | `github.com/go-chi/chi/v5` |
+| Base de datos | MongoDB 7+ (replica set) |
+| Driver | `go.mongodb.org/mongo-driver/v2` |
+| Validación | `github.com/go-playground/validator/v10` |
+| Logging | `log/slog` (biblioteca estándar) |
+| Configuración | Variables de entorno (biblioteca estándar) |
+| Pruebas | `testing` + `testify` + `testcontainers-go` (módulo mongodb) |
+| Calidad | `gofmt`, `go vet`, `golangci-lint` |
+| Contenedores | Docker + Docker Compose (desarrollo), Dockerfile multi‑etapa |
+| Contrato | OpenAPI 3.1 en `api/openapi.yaml` |
+
+## 4. Estructura del repositorio
+
+```
+backend/
+├─ cmd/api/main.go            # composición e inicio
+├─ internal/
+│  ├─ config/                 # lectura y validación de entorno
+│  ├─ domain/                 # entidades, objetos de valor, errores de dominio
+│  ├─ usecase/                # casos de uso y puertos (interfaces)
+│  ├─ adapter/
+│  │  ├─ http/                # router, handlers, middleware, DTO, respuestas
+│  │  └─ mongo/               # repositorios, mapeo BSON, índices
+│  └─ platform/               # logger, cliente Mongo, reloj, generador de IDs
+├─ api/openapi.yaml
+├─ specs/NNN-nombre/{spec.md, plan.md, tasks.md}
+├─ .opencode/{agents, skills}
+├─ constitution.md · AGENTS.md · memoria.md · opencode.json
+└─ docker-compose.yml · Dockerfile · Makefile · .env.example
+```
+
+## 5. Convenciones de código
+
+- Paquetes en minúscula, sin guiones bajos; archivos en `snake_case.go`.
+- Errores: se devuelven, no se ignoran; se envuelven con `fmt.Errorf("contexto: %w", err)`. Los errores de dominio son tipos propios que el adaptador HTTP traduce a los códigos del Art. IV.
+- `context.Context` es el primer parámetro de toda operación que toque I/O.
+- Sin variables globales mutables; las dependencias se inyectan por constructor.
+- Comentarios de paquete y de símbolos exportados en español, concisos.
+
+## 6. Convenciones de datos en MongoDB
+
+1. **Colecciones:** `snake_case`, plural (`loan_requests`). **Campos:** `camelCase` (idénticos en BSON y JSON). `_id` es `ObjectID` y se expone como `id` (cadena).
+2. **Incrustar** cuando los datos se leen juntos y tienen cardinalidad acotada; **referenciar** (guardando el `ObjectID`) cuando crecen sin límite o se consultan por separado. Prohibidos los arreglos de crecimiento ilimitado dentro de un documento.
+3. **Instantáneas:** cuando un acuerdo debe conservar lo que se aceptó (precio, condiciones), se copia el dato al documento del acuerdo; no se referencia al original mutable.
+4. **Todo documento** incluye `createdAt`, `updatedAt` (UTC) y, si admite ediciones concurrentes, un entero `version` para control optimista.
+5. **Índices** declarados en código (`EnsureIndexes` por repositorio) y creados al arrancar de forma idempotente; toda consulta frecuente tiene índice. Se usan índices únicos para invariantes de unicidad.
+6. **Validación de esquema** con `$jsonSchema` en colecciones críticas, además de la validación en la aplicación.
+7. **Transacciones** solo cuando una operación deba ser atómica entre documentos; se prefiere diseñar para atomicidad de un solo documento.
+8. Borrado lógico (`deletedAt`) o TTL según lo defina cada spec; nunca borrado físico de evidencia o historial sin política escrita.
+9. Dinero: `…Cents` como `int64`; nunca `Decimal128` ni `double`.
+
+## 7. Definición de Hecho (DoD) de una tarea
+
+- [ ] Cumple los criterios de aceptación de la tarea en `tasks.md`.
+- [ ] Respeta todos los artículos de esta constitución (revisado por `revisor-constitucion`).
+- [ ] `gofmt`, `go vet`, `golangci-lint` y `go test ./...` sin fallos.
+- [ ] `api/openapi.yaml` actualizado si cambió el contrato.
+- [ ] `memoria.md` actualizado si hubo decisión, dependencia nueva o aprendizaje relevante.
+- [ ] Un commit Conventional Commit por tarea.
