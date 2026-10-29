@@ -62,6 +62,6 @@ La excepción `[skip ci]` se usa solo para incorporar esta configuración inicia
 
 Antes de cambiar `backend/` o `mobile/`, sigue las instrucciones de su `AGENTS.md`, constitución y especificaciones.
 
-Describe en cada PR las pruebas que correspondan al cambio. El repositorio todavía no tiene código de aplicación ni pipelines de compilación o pruebas; esos controles se añadirán cuando se implemente cada proyecto.
+Describe en cada PR las pruebas que correspondan al cambio. La [CI del monorepo](docs/CI_MONOREPO.md) selecciona backend y mobile según los cambios y sus manifiestos. Mientras no exista código de aplicación, omite sus jobs y lo indica expresamente; al aparecer el proyecto, exige sus comandos de calidad, pruebas y revisión de dependencias. El check final `CI monorepo` debe ser obligatorio, no los jobs individuales que pueden omitirse.
 
 El workflow `Repository security` detecta secretos con Gitleaks y analiza los workflows con zizmor. Dependabot revisa las acciones semanalmente. Consulta [SECURITY.md](SECURITY.md) para conocer el alcance, la activación de checks obligatorios y las siguientes fases.

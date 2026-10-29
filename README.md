@@ -44,6 +44,7 @@ opencode          # abre OpenCode en ese proyecto
 
 - [Guía de contribución y flujo de ramas](CONTRIBUTING.md).
 - [Controles de seguridad y siguientes fases del monorepo](SECURITY.md).
+- [CI por componente y check final obligatorio](docs/CI_MONOREPO.md).
 - Los PRs incluyen validación de nombres y escaneos de secretos y workflows. El bloqueo por checks se configura en el Ruleset después de comprobar su ejecución.
 
 ## Estado
