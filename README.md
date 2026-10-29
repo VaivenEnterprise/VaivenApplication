@@ -39,6 +39,13 @@ opencode          # abre OpenCode en ese proyecto
 - La app móvil consume `GET /api/v1/meta` del backend en su pantalla de diagnóstico.
 - Si cambias un artículo compartido, cámbialo en **ambas** constituciones y registra la decisión en ambas `memoria.md`.
 
+
+## Colaboración y seguridad
+
+- [Guía de contribución y flujo de ramas](CONTRIBUTING.md).
+- [Controles de seguridad y siguientes fases del monorepo](SECURITY.md).
+- Los PRs incluyen validación de nombres y escaneos de secretos y workflows. El bloqueo por checks se configura en el Ruleset después de comprobar su ejecución.
+
 ## Estado
 
 - [x] Constituciones, `AGENTS.md`, `memoria.md`, agentes y skills
