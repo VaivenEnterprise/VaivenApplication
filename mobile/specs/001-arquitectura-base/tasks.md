@@ -148,11 +148,11 @@
   - Aceptación: la prueba falla si en `src/` (excepto `theme/` e `i18n/`) aparece un color literal `#hex` o un texto visible literal dentro de JSX; pasa en el estado actual
   - Refs: plan P-11 · RNF-04 · Art. V, VII
 
-- [ ] **T020** [P] Verificación automática (CI)
-  - Archivos: `.github/workflows/ci.yml`
+- [ ] **T020** [P] Activar la CI existente del repositorio con la app
+  - Archivos: `package.json` (scripts `typecheck`, `lint`, `test`), `package-lock.json`, ajustes mínimos en `.github/workflows/monorepo-ci.yml` solo si hace falta
   - Agente: `dev-expo`
   - Depende de: T003, T004
-  - Aceptación: en cada *push* y *pull request* ejecuta `npm ci`, `npm run typecheck`, `npm run lint`, `npm test` y `npx prettier --check .`
+  - Aceptación: el repositorio **ya tiene** `monorepo-ci.yml` (ver `docs/CI_MONOREPO.md`); con `mobile/package.json` y `package-lock.json` presentes el trabajo `Mobile Expo` deja de omitirse y pasa: `npm ci`, `typecheck`, `lint`, `test` (sin `--passWithNoTests`, cobertura ≥ 80 % en `src/lib/` y `src/features/*/hooks/`), `prettier --check` y `npm audit --audit-level=high`; **no se crea un segundo `ci.yml`**
   - Refs: H-10 · Art. IX
 
 - [ ] **T021** [P] README de la app

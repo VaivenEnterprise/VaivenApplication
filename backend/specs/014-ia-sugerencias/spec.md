@@ -40,5 +40,5 @@ La entrega oficial (1–4 dic) exige que todos los specs estén completos, inclu
 Entrenar modelos, descripciones largas generadas, IA en el chat, sugerencia de precio por IA (ya existe la fórmula de la spec 005), moderación de imágenes por IA.
 
 ## 6. Preguntas abiertas
-- [NEEDS CLARIFICATION: ¿Qué proveedor gratuito se usa en producción? Provisional: Gemini (capa gratuita). Revisar sus condiciones: algunas capas gratuitas pueden usar los datos para mejorar el servicio, lo que debe declararse a las personas usuarias o cambiarse de proveedor.]
+- Resuelto (28 oct): el proveedor es **Gemini** (capa gratuita; proyecto escolar). Como la capa gratuita puede usar los datos enviados para mejorar el servicio, el aviso de privacidad y «Seguridad de datos» de Play deben decirlo claramente (mobile 014-T006).
 - [NEEDS CLARIFICATION: ¿Qué se pide exactamente para la «entrega académica» (solo sugerencia por foto, o también ML propio)? Provisional: solo sugerencia por foto.]

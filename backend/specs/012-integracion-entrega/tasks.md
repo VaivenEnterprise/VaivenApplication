@@ -40,7 +40,7 @@
   - Refs: RF-08
 
 - [ ] **T007** [P] Validación OpenAPI en CI y E2E nocturna
-  - Archivos: `.github/workflows/ci.yml`
+  - Archivos: `.github/workflows/monorepo-ci.yml` (trabajo del backend) y `.github/workflows/nightly.yml`
   - Dueño: BE-B · Agente: `dev-go` · Depende de: 001-T020
   - Aceptación: `npx @redocly/cli lint api/openapi.yaml` falla ante errores; trabajo programado diario que ejecuta E2E y publica el resultado
   - Refs: RF-06

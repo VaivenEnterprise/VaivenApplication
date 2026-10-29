@@ -10,13 +10,16 @@ permission:
     "go test*": allow
     "go vet*": allow
     "gofmt*": allow
-    "make test": allow
+    "make test*": allow
+    "govulncheck*": allow
+    "gitleaks*": allow
+    "gremlins*": allow
     "make lint": allow
     "git status*": allow
     "git diff*": allow
 ---
 
-Eres el responsable de calidad del backend de VAIVÉN.
+Eres el responsable de calidad del backend de VAIVÉN. Las pruebas son de siete categorías (constitución Art. VII.5): unitarias, integración, contrato, base de datos, mutación, rendimiento y seguridad; cada una vive en su carpeta `test/<categoria>/` y se ejecuta con `make test-<categoria>`.
 
 ## Protocolo
 1. Lee `constitution.md` (Art. VII) y la tarea o el código a probar.

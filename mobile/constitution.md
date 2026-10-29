@@ -104,7 +104,7 @@ La app móvil es el cliente de la plataforma. **Solo habla con la API del backen
 3. **Concha de navegación:** `src/app/_layout.tsx` y `src/app/(tabs)/_layout.tsx` los crea la spec 003 con todas las pestañas definidas (Explorar, Mis objetos, Actividad, Mensajes, Perfil). Las demás specs solo agregan archivos dentro de su propia carpeta de ruta.
 4. **Textos por funcionalidad:** `src/i18n/<funcionalidad>.ts` por spec, reexportado en `src/i18n/es-MX.ts` con **una línea**. Igual con las claves de consulta (`features/<f>/keys.ts`).
 5. **Componentes compartidos:** un componente nuevo de `components/ui/` solo lo crea el dueño de la spec que lo necesita primero y lo avisa; las demás lo reutilizan sin copiarlo.
-6. **Ramas y PR:** una rama por tarea `feat/<spec>-<tarea>`, PR pequeño (≈ 400 líneas), revisión cruzada por otra persona, `main` siempre verde (typecheck + lint + pruebas).
+6. **Ramas y PR:** una rama por tarea con el formato del repositorio `<tipo>/SCRUM-<n>-<Descripcion>` (p. ej. `feat/SCRUM-123-Crear-objetos`; la clave sale de la tarea en Jira y la descripción lleva solo letras y guiones, sin números). El id de spec y tarea (`007-T004`) va en el título del PR y del commit. PR pequeño (≈ 400 líneas) **hacia `develop`**, revisión cruzada por otra persona, `develop` siempre verde (typecheck + lint + pruebas); `main` solo recibe ramas `release/` (ver `CONTRIBUTING.md`).
 7. **`memoria.md` es solo-anexar:** cada persona agrega líneas al final de su sección con su etiqueta (`[MO-A]`, `[MO-B]`); ante un conflicto se conservan ambas.
 
 ---

@@ -30,7 +30,7 @@
 - [ ] **T005** Despliegue de staging
   - Archivos: `render.yaml` (o equivalente del proveedor), ajuste de `CORS_ALLOWED_ORIGINS` en la documentación
   - Agente: `dev-go` · Depende de: T001, 001-T019
-  - Aceptación: el servicio despliega desde `main`; variables definidas en el panel del proveedor; `APP_ENV=staging`
+  - Aceptación: el servicio de **staging** despliega desde `develop` (producción lo hará desde `main`, que solo recibe ramas `release/`); variables definidas en el panel del proveedor; `APP_ENV=staging`
   - Refs: RF-05, RF-06 · P-05
 
 - [ ] **T006** Verificar staging contra Atlas y anotar la URL

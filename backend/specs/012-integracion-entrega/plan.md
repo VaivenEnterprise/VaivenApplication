@@ -7,7 +7,7 @@
 test/e2e/{journey_test.go, helpers_test.go, fake_cloudinary_test.go}      # -tags e2e
 cmd/admin/{seed.go, seed_data.go, indexes.go, assets/*.jpg}
 internal/adapter/http/middleware/{ratelimit_global.go, security_headers.go} (+ tests)
-.github/workflows/ci.yml (modificar: OpenAPI + E2E)
+.github/workflows/monorepo-ci.yml (modificar: OpenAPI + E2E) y nightly.yml
 docs/{api.md, despliegue.md, politicas.md, demo.md, validacion.md, seguridad.md}
 README.md (actualizar)
 ```

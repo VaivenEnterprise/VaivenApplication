@@ -1,7 +1,7 @@
 # Tareas 003 — Cuenta y autenticación (backend)
 
 - **Dueño:** BE-A · **Estado:** sin ejecutar · `[P]` = paralelizable
-- **T001 va primero y se integra a `main` el mismo día**, para que MO-A y los demás lean el contrato.
+- **T001 va primero y se integra a `develop` el mismo día**, para que MO-A y los demás lean el contrato.
 
 - [ ] **T001** Contrato OpenAPI de auth y usuarios
   - Archivos: `api/paths/auth.yaml`, `api/paths/users.yaml`, `api/openapi.yaml` (agregar `$ref`)

@@ -88,7 +88,7 @@ La app necesita el backend en marcha. En emulador Android, `localhost` del equip
 ## 8. Trabajo en paralelo (4 personas, Art. XIII)
 
 - Trabaja **solo en la spec asignada** a tu persona en `../ROADMAP.md` y solo si su contrato (`../backend/api/paths/<modulo>.yaml`) ya está publicado.
-- Rama por tarea: `feat/<spec>-<tarea>` (p. ej. `feat/007-T004`). PR pequeño, revisión cruzada, `main` siempre verde.
+- Rama por tarea con el formato del repositorio `<tipo>/SCRUM-<n>-<Descripcion>` (p. ej. `feat/SCRUM-123-Crear-objetos`: solo letras y guiones, sin números); el id `005-T003` va en el título del PR. PR pequeño hacia `develop`, revisión cruzada, `develop` siempre verde.
 - No edites `src/app/_layout.tsx` ni `src/app/(tabs)/_layout.tsx` (los crea la spec 003). Agrega archivos solo dentro de tu carpeta de ruta y de tu feature.
 - Textos en `src/i18n/<funcionalidad>.ts` (una línea de reexport en `es-MX.ts`); claves de consulta en `features/<f>/keys.ts`.
 - Reutiliza `components/ui/`; no dupliques componentes.

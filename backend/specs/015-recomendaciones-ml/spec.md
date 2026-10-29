@@ -46,5 +46,5 @@ La entrega oficial (1–4 dic) exige integrar **ML** además de IA generativa (s
 Redes neuronales, embeddings externos, entrenamiento en línea, pruebas A/B, notificaciones de recomendaciones, recomendaciones de personas.
 
 ## 6. Preguntas abiertas
-- [NEEDS CLARIFICATION: ¿La materia pide un algoritmo concreto (p. ej., k-NN, regresión, clustering) o un enfoque en particular? Provisional: filtrado colaborativo objeto-objeto + contenido, que es ML clásico y defendible.]
+- Resuelto (29 oct): no hay un algoritmo obligatorio; se usa ML clásico (filtrado colaborativo objeto-objeto + contenido), lo importante es que sirva a la app y se pueda explicar y medir.
 - [NEEDS CLARIFICATION: pesos y α definitivos; provisional 3/1 y 0.7, a ajustar con la evaluación (RF-07).]

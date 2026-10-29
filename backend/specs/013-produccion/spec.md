@@ -9,7 +9,7 @@ Tener un **entorno de producción separado de staging**, gratuito y operable, de
 ## 2. Requisitos
 | ID | Requisito |
 |---|---|
-| RF-01 | Servicio **Render** gratuito `vaiven-prod` (Docker, mismo `Dockerfile`), desplegado desde `main` (o etiqueta), con variables de entorno propias; `/healthz` y `/readyz` responden 200. |
+| RF-01 | Servicio **Render** gratuito `vaiven-prod` (Docker, mismo `Dockerfile`), desplegado desde `main` (que solo recibe ramas `release/`) o etiqueta, con variables de entorno propias; `/healthz` y `/readyz` responden 200. |
 | RF-02 | **Base de datos propia en Atlas**: `vaiven_prod`, usuario con permisos solo sobre esa base, contraseña fuerte distinta de staging; los índices se crean con el comando `indexes` y `EnsureIndexes` al arranque. |
 | RF-03 | **Cloudinary**: carpeta `vaiven/production/` (variable `CLOUDINARY_FOLDER`), separada de staging; el *API secret* solo en el backend. |
 | RF-04 | **Secretos de producción distintos** de staging (`JWT_SECRET`, credenciales de Mongo y Cloudinary); guardados en Render; ninguno en git; procedimiento de rotación documentado. |
@@ -37,5 +37,6 @@ Tener un **entorno de producción separado de staging**, gratuito y operable, de
 Alta disponibilidad, escalado automático, respaldos automáticos continuos, dominio propio, CDN propio, alertas avanzadas (solo el monitor básico).
 
 ## 5. Preguntas abiertas
+- [NEEDS CLARIFICATION: el repositorio (`SECURITY.md`) prevé un despliegue a AWS con OIDC en una fase posterior, mientras que la decisión vigente para el MVP es Render gratuito. ¿Se mantiene Render hasta la entrega? Provisional: sí.]
 - [NEEDS CLARIFICATION: ¿El monitor de ping será un servicio gratuito externo? Provisional: sí; se anota cuál en `docs/produccion.md`.]
 - [NEEDS CLARIFICATION: ¿Qué hacer cuando Atlas M0 se llene? Provisional: avisar y limpiar evidencia antigua manualmente; migrar a un plan de pago queda fuera de alcance.]

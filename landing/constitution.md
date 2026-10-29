@@ -80,5 +80,5 @@ landing/
 
 ## Art. XI — Trabajo en equipo
 1. Dueño por spec (ver `../ROADMAP.md`); solo esa persona edita su `tasks.md`.
-2. Rama `feat/landing-<spec>-<tarea>`, PR ≤ 400 líneas, revisión cruzada.
+2. Rama con el formato del repositorio `<tipo>/SCRUM-<n>-<Descripcion>` (p. ej. `feat/SCRUM-130-Pagina-privacidad`), PR ≤ 400 líneas **hacia `develop`**, revisión cruzada; el id de spec y tarea va en el título del PR.
 3. `memoria.md` es solo-anexar con la etiqueta `[MO-B]` (o quien haga el cambio).
