@@ -5,7 +5,7 @@
 ## 1. Archivos
 ```
 Makefile (objetivos test-*)                      docs/{pruebas.md, mutation.md}
-.github/{workflows/ci.yml, workflows/nightly.yml, dependabot.yml}
+.github/workflows/monorepo-ci.yml (existente, se amplía) · .github/workflows/nightly.yml · .github/dependabot.yml (existente, se amplía)
 test/contract/{harness_test.go, routes_test.go, <modulo>_test.go}
 test/database/{harness_test.go, indexes_test.go, queries_test.go, constraints_test.go, tx_test.go}
 test/security/{harness_test.go, authz_matrix_test.go, nosql_injection_test.go, abuse_test.go, headers_test.go, leakage_test.go}

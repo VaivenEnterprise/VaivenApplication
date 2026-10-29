@@ -88,8 +88,8 @@ Si `make` no está disponible en Windows, usar Git Bash o WSL, o ejecutar el com
 
 ## 8. Trabajo en paralelo (4 personas, Art. XII)
 
-- Trabaja **solo en la spec asignada** a tu persona en `../ROADMAP.md` y solo si sus dependencias ya están integradas en `main`.
-- Rama por tarea: `feat/<spec>-<tarea>` (p. ej. `feat/005-T003`). PR pequeño, revisión cruzada, `main` siempre verde.
+- Trabaja **solo en la spec asignada** a tu persona en `../ROADMAP.md` y solo si sus dependencias ya están integradas en `develop`.
+- Rama por tarea con el formato del repositorio `<tipo>/SCRUM-<n>-<Descripcion>` (p. ej. `feat/SCRUM-123-Crear-objetos`: solo letras y guiones, sin números); el id `005-T003` va en el título del PR. PR pequeño hacia `develop`, revisión cruzada, `develop` siempre verde.
 - Tu primera tarea de cada spec publica el contrato en `api/paths/<modulo>.yaml`.
 - Registra tu módulo con **una línea** en `cmd/api/modules.go`. No edites rutas ni archivos de otros módulos.
 - Los puertos compartidos (`notify.Notifier`, `moderation.Checker`, `chat.Opener`, `images.Service`) ya existen con implementación vacía: úsalos, no los reimplementes.

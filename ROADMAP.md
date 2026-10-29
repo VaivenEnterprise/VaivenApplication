@@ -42,9 +42,9 @@ Cada persona trabaja con su propio OpenCode. Las parejas comparten spec de punta
 
 | Rol | Persona | Pareja | Dueña de las specs |
 |---|---|---|---|
-| **BE-A** (backend) | _(completar)_ | MO-A | 003, 005, 007, 009 |
+| **BE-A** (backend) | _(completar)_ | MO-A | 003, 005, 007, 009, 014, **016 (contrato, mutación, informe)** |
 | **MO-A** (móvil) | _(completar)_ | BE-A | 003, 005, 007, 009 |
-| **BE-B** (backend) | _(completar)_ | MO-B | 002, 004, 006, 008, 010, 011 |
+| **BE-B** (backend) | _(completar)_ | MO-B | 002, 004, 006, 008, 010, 011, 015, **016 (CI y seguridad, base de datos, rendimiento)** |
 | **MO-B** (móvil) | _(completar)_ | BE-B | 002, 004, 006, 008, 010, 011, **013 móvil**, **landing** |
 
 El **administrador del repositorio** (quien paga y administra la cuenta de Google Play) es responsable de la cuenta, los testers y las respuestas de Google; MO-B prepara los artefactos (AAB, ficha, landing) y BE-B el backend de producción (backend 013).
@@ -72,6 +72,7 @@ Prioridad: **P0** = sin esto no hay app · **P1** = esperado · **P2** = recorta
 | 013 | Publicación en Google Play (móvil) y producción (backend) | Ficha, cumplimiento, prueba cerrada, producción; backend de producción | MO-B / BE-B + administrador | P0 | 001 (inicio), 012 (cierre) | 30 oct–20 nov |
 | 014 | **IA (v1.1, después de la 1.0)** | Sugerir título y categoría a partir de una foto, siempre con revisión de quien publica (proveedor gratuito; interruptor `AI_ENABLED`) | BE-A / MO-A (+ MO-B cumplimiento) | P1 | 004, 005, 011, 013 | 16–24 nov |
 | 015 | **ML: recomendaciones (v1.1)** | «Recomendado para ti»: recomendador híbrido propio (colaborativo objeto-objeto + contenido), evaluado con Hit@10/Recall@10/MRR contra popularidad; interruptor `RECO_ENABLED` | BE-B / MO-B | P1 | 005, 006, 007, 013 | 16–24 nov |
+| 016 | **Pruebas y pipeline DevSecOps** (requisito del curso) | Siete categorías de pruebas (unitarias, integración, contrato, base de datos, mutación, rendimiento, seguridad) equivalentes a la solución `WebAPIDevSecOps`; pipeline CI/CD | BE-A + BE-B | P1 | 001 (fase 1); cada módulo (fase 2); 012 | 30 oct–15 nov |
 | L001 | Landing: base y páginas legales | Sitio estático, privacidad, términos, eliminación de cuenta, publicación gratuita | MO-B | P0 | — | 30 oct–1 nov |
 | L002 | Landing: página principal | Información de la app, cómo funciona, FAQ, botón a Google Play | MO-B | P1 | L001 | 2–9 nov |
 
@@ -85,7 +86,7 @@ Las dependencias "parciales" se resuelven con **puertos vacíos** (§4) y contra
 
 ### Hitos
 
-| Hito | Fecha de cierre | Debe estar integrado en `main` |
+| Hito | Fecha de cierre | Debe estar integrado en `develop` |
 |---|---|---|
 | H0 Base | 30 oct | 001 + cuentas de servicios (002) |
 | H-Legal Landing legal | 1 nov | L001: privacidad, términos y eliminación de cuenta publicados (requisito para la ficha de Play) |
@@ -125,7 +126,7 @@ Las dependencias "parciales" se resuelven con **puertos vacíos** (§4) y contra
 | MO-A | T001, T002, T005, T010, T011, T012, T013, T016, T017, T018, T022 |
 | MO-B | T003, T004, T006, T007, T008, T009, T014, T015, T019, T020, T021, T023 |
 
-T001 de cada proyecto la hace primero la persona A; el resto espera a que esté en `main`.
+T001 de cada proyecto la hace primero la persona A; el resto espera a que esté en `develop`.
 
 ## 6. Línea de corte (qué se recorta si hay retraso)
 
@@ -135,6 +136,7 @@ T001 de cada proyecto la hace primero la persona A; el resto espera a que esté 
 | 24 nov | 014 o 015 sin integrar | Queda apagada (`AI_ENABLED=false` / `RECO_ENABLED=false`) y se entrega como demostración en staging; la 1.0 ya está publicada |
 | 11 nov (H4) | 009 | Pagos registrados y retrasos (queda evidencia + QR); incidencias |
 | 12 nov | 011 push | Notificaciones push (queda lista de avisos dentro de la app) |
+| 14 nov | 016 | Se recorta T010 (trivy y ZAP) y la mutación se limita a precio y disponibilidad; **nunca** contrato, base de datos ni seguridad (T003–T007) |
 | 13 nov | 012 | Documentación extendida y accesibilidad fina; **nunca** el recorrido de punta a punta |
 
 Nunca se recorta: cuenta, publicar, buscar, solicitar/reservar, entrega y devolución con QR, calificar, **reportar contenido y filtro de contenido** (requisito de Google Play para apps con contenido de usuarios), eliminar cuenta (dentro y fuera de la app), política de privacidad y la ruta a Google Play (§1).
@@ -142,8 +144,8 @@ Nunca se recorta: cuenta, publicar, buscar, solicitar/reservar, entrega y devolu
 ## 7. Cómo trabajan los 4 OpenCode a la vez
 
 1. **Un dueño por spec.** Solo esa persona edita su `tasks.md` y su código.
-2. **Contrato primero.** Día 1 de cada spec: el backend publica `api/paths/<modulo>.yaml` en `main`; el móvil empieza a la par.
-3. **Rama por tarea** `feat/<spec>-<tarea>`, PR ≤ 400 líneas, **revisión cruzada**, `main` verde.
+2. **Contrato primero.** Día 1 de cada spec: el backend publica `api/paths/<modulo>.yaml` en `develop`; el móvil empieza a la par.
+3. **Rama por tarea** `<tipo>/SCRUM-<n>-<Descripcion>` (formato del repositorio; el id `005-T003` va en el título del PR), PR ≤ 400 líneas hacia `develop`, **revisión cruzada**, `develop` verde. `main` solo recibe `release/`.
 4. **Sincronía diaria** de 15 min: qué se integró, qué bloquea, qué contrato cambia.
 5. **Un cambio de contrato** se avisa en el grupo y se actualiza en ambos lados el mismo día.
 6. **`memoria.md` solo-anexar** con tu etiqueta; conflictos: conservar ambas líneas.
@@ -187,7 +189,7 @@ El PDF dice que importes y plazos se fijan en las políticas del servicio. Estos
 
 ## 10. Antes del 29 de octubre (lo prepara quien administra el repositorio)
 
-- [ ] Rama `main` protegida (PR obligatorio, 1 revisión, checks verdes) y las 4 personas con acceso.
+- [x] Ramas `main` y `develop` protegidas (PR obligatorio, 1 aprobación, checks obligatorios `Validar nombre de rama`, `Detectar secretos`, `Seguridad de workflows` y `CI monorepo`) según `CONTRIBUTING.md` y `SECURITY.md`; falta confirmar que las 4 personas tengan acceso.
 - [ ] Cuenta y clúster gratuito de **MongoDB Atlas (M0)** con usuario y red permitida; cadena de conexión guardada fuera del repositorio.
 - [ ] Cuenta de **Cloudinary** (nombre de nube, API key, API secret); carpeta base `vaiven/`.
 - [ ] Cuenta de **Expo** (EAS) con un proyecto `vaiven` y acceso para las 2 personas de móvil.
@@ -248,6 +250,7 @@ El PDF dice que importes y plazos se fijan en las políticas del servicio. Estos
 | 013 | 9 | 11 |
 | 014 | 8 | 7 |
 | 015 | 10 | 7 |
-| **Total** | **168** | **168** |
+| 016 | 12 | — |
+| **Total** | **180** | **168** |
 
-Landing: L001 (10 tareas) y L002 (10 tareas), ver `landing/specs/`. **Total general: 356 tareas.**
+Landing: L001 (10 tareas) y L002 (10 tareas), ver `landing/specs/`. **Total general: 368 tareas.**

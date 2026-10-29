@@ -37,7 +37,7 @@ mobile/
 ├─ app.config.ts · package.json · tsconfig.json
 ├─ eslint.config.js · .prettierrc · jest.config.js · jest.setup.ts
 ├─ .env.example · .gitignore
-├─ .github/workflows/ci.yml
+├─ (CI: .github/workflows/monorepo-ci.yml, ya existe en la raíz del repositorio)
 └─ README.md
 ```
 

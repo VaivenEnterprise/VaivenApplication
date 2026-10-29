@@ -30,7 +30,7 @@ backend/
 ├─ api/openapi.yaml
 ├─ docker-compose.yml · Dockerfile · Makefile
 ├─ .env.example · .gitignore · .golangci.yml · .editorconfig
-├─ .github/workflows/ci.yml
+├─ (CI: .github/workflows/monorepo-ci.yml, ya existe en la raíz del repositorio)
 └─ README.md
 ```
 

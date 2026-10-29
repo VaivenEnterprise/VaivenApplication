@@ -1,6 +1,7 @@
 # Constitución del Backend — VAIVÉN
 
 > **Versión 1.2.0** · Ratificada el 2026-10-26 · Enmendada el 2026-10-28 (Cloudinary para imágenes; Art. XII trabajo en paralelo) y el 2026-10-29 (Art. VII: siete categorías de pruebas y pipeline DevSecOps) · Proyecto: `backend/` (Go + MongoDB)
+>
 > Esta es la máxima autoridad técnica del backend. Si `AGENTS.md`, `memoria.md`, `spec.md`, `plan.md`, `tasks.md`, un agente o una skill la contradicen, **gana la constitución** y el otro archivo debe corregirse.
 > La constitución del móvil (`../mobile/constitution.md`) comparte los Artículos IV y V; ambas deben mantenerse idénticas en esos puntos.
 
@@ -73,7 +74,7 @@ El backend es una **API REST en Go** con persistencia en **MongoDB**. Es la úni
 3. `gofmt`, `go vet` y `golangci-lint` deben pasar sin advertencias antes de dar una tarea por hecha.
 4. Commits con *Conventional Commits* (`feat:`, `fix:`, `docs:`, `test:`, `chore:`, `refactor:`), uno por tarea.
 5. **Siete categorías de pruebas (enmienda 1.2.0, requisito del curso):** el backend lleva pruebas **unitarias, de integración, de contrato, de base de datos, de mutación, de rendimiento y de seguridad**, equivalentes a los proyectos de la solución de referencia `WebAPIDevSecOps` (UnitTest, IntegrationTest, ContractTest, DatabaseTest, MutationTest, PerformanceTest, SecurityTest). Se organizan en `test/<categoria>/` (las unitarias, junto al código en `*_test.go`) y se ejecutan con `make test-unit`, `test-integration`, `test-contract`, `test-database`, `test-mutation`, `test-performance`, `test-security` y `test-all`. Detalle en la spec 016.
-6. **Pipeline DevSecOps:** en cada *push* y *pull request* corren formato, `go vet`, `golangci-lint` (incluye `gosec`), pruebas unitarias con `-race` y cobertura, integración, base de datos y contrato con MongoDB real, `govulncheck` y `gitleaks`; la imagen se escanea con `trivy`. Mutación, rendimiento de carga y escaneo dinámico (ZAP) corren de noche o a mano. `main` no se integra con el pipeline en rojo.
+6. **Pipeline DevSecOps:** en cada *push* y *pull request* corren formato, `go vet`, `golangci-lint` (incluye `gosec`), pruebas unitarias con `-race` y cobertura, integración, base de datos y contrato con MongoDB real, `govulncheck`; `gitleaks` y el análisis de workflows ya los ejecuta `repository-security.yml`; la imagen se escanea con `trivy`. Mutación, rendimiento de carga y escaneo dinámico (ZAP) corren de noche o a mano. Se **extiende la CI existente del repositorio** (`monorepo-ci.yml`, ver `docs/CI_MONOREPO.md`) sin crear una paralela: acciones fijadas a commits completos, sin secretos y sin `pull_request_target`. `develop` y `main` no se integran con el pipeline en rojo.
 7. **Umbrales:** cobertura ≥ 80 % en `domain` y `usecase`; puntuación de mutación ≥ 60 % en los paquetes críticos (precio, disponibilidad y estados de reserva, calificaciones, modelo de recomendación); p95 < 500 ms en la prueba de carga; cero vulnerabilidades altas o críticas sin justificar; cero secretos en el repositorio.
 8. Las pruebas de contrato validan **cada respuesta contra `api/openapi.yaml`**; una ruta registrada que no esté en el contrato, o al revés, hace fallar la prueba.
 
@@ -82,7 +83,7 @@ El backend es una **API REST en Go** con persistencia en **MongoDB**. Es la úni
 2. Prohibido construir abstracciones "por si acaso": solo lo que una spec vigente necesita.
 3. Funciones cortas, un propósito por paquete, nombres explícitos.
 4. **Dependencias previstas** (ya aprobadas, se registran en `memoria.md` al instalarse): `go-playground/validator/v10`, `golang.org/x/crypto` (argon2), `github.com/golang-jwt/jwt/v5`, y **solo para pruebas** `github.com/getkin/kin-openapi` (contrato). Las herramientas `gremlins`, `govulncheck`, `gitleaks`, `trivy`, `k6` y ZAP se ejecutan como binarios o contenedores y **no** entran en `go.mod`. Cloudinary y Expo Push se usan con `net/http` y la biblioteca estándar, **sin SDK**.
-5. 
+
 ### Art. IX — Observabilidad
 1. Logs estructurados con `log/slog` (JSON en producción) y un `requestId` por petición, devuelto en el encabezado `X-Request-Id`.
 2. `/healthz` indica que el proceso vive; `/readyz` verifica la conexión a MongoDB.
@@ -104,7 +105,7 @@ El backend es una **API REST en Go** con persistencia en **MongoDB**. Es la úni
 2. **Contrato primero:** la primera tarea de cada spec publica sus endpoints en `api/paths/<modulo>.yaml` (referenciado desde `api/openapi.yaml`) para que el móvil trabaje contra el contrato sin esperar al código.
 3. **Módulos:** cada funcionalidad es un módulo (`internal/<modulo>/` con sus capas) que se registra con **una sola línea** en `cmd/api/modules.go`. Prohibido editar rutas de otro módulo.
 4. **Puertos compartidos** (`notify.Notifier`, `moderation.Checker`, `chat.Opener`, `images.Service`) se definen una vez con implementación vacía y las specs posteriores los reemplazan sin cambiar a quien los consume.
-5. **Ramas y PR:** una rama por tarea `feat/<spec>-<tarea>` (`feat/005-T003`), PR pequeño (≈ 400 líneas), revisión cruzada por otra persona, `main` siempre verde (lint + pruebas).
+5. **Ramas y PR:** una rama por tarea con el formato del repositorio `<tipo>/SCRUM-<n>-<Descripcion>` (p. ej. `feat/SCRUM-123-Crear-objetos`; la clave sale de la tarea en Jira y la descripción lleva solo letras y guiones, sin números). El id de spec y tarea (`005-T003`) va en el título del PR y del commit. PR pequeño (≈ 400 líneas) **hacia `develop`**, revisión cruzada por otra persona, `develop` siempre verde (lint + pruebas); `main` solo recibe ramas `release/` (ver `CONTRIBUTING.md`).
 6. **`memoria.md` es solo-anexar:** cada persona agrega líneas nuevas al final de su sección con su etiqueta (`[BE-A]`, `[BE-B]`); ante un conflicto de fusión se conservan ambas.
 7. Mientras una dependencia entre specs no esté lista, se usa el puerto vacío; nunca se duplica ni se copia código de otro módulo.
 
@@ -146,7 +147,7 @@ backend/
 │  └─ platform/               # logger, cliente Mongo, reloj, generador de IDs
 ├─ api/openapi.yaml
 ├─ test/{e2e,contract,database,mutation,performance,security}/   # pruebas por categoría (las unitarias van junto al código)
-├─ .github/workflows/         # pipeline DevSecOps (ci.yml, nightly.yml)
+├─ .github/workflows/         # CI del monorepo (monorepo-ci.yml, ya existe) + nightly.yml
 ├─ specs/NNN-nombre/{spec.md, plan.md, tasks.md}
 ├─ .opencode/{agents, skills}
 ├─ constitution.md · AGENTS.md · memoria.md · opencode.json

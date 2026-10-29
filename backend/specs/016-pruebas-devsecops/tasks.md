@@ -14,9 +14,9 @@
   - Refs: RF-01 · CA-01, CA-08
 
 - [ ] **T002** Pipeline DevSecOps
-  - Archivos: `.github/workflows/ci.yml` (amplía el de 001-T020), `.github/workflows/nightly.yml`, `.github/dependabot.yml`
+  - Archivos: `.github/workflows/monorepo-ci.yml` (amplía el trabajo del backend), `.github/scripts/ci-plan.cjs` (solo si hace falta), `.github/workflows/nightly.yml`, `.github/dependabot.yml` (agrega `gomod` y `docker`)
   - Dueño: BE-B · Agente: `dev-go` · Depende de: 001-T020, T001
-  - Aceptación: etapas de plan §3; servicio MongoDB replica set en Actions; falla si la cobertura de `domain`/`usecase` < 80 %; `govulncheck` y `gitleaks` bloquean; `nightly.yml` con mutación, `k6` y ZAP (pueden ser marcadores hasta T008–T010); `dependabot` para Go y Actions
+  - Aceptación: etapas de plan §3 **sobre la CI existente** (sin segundo workflow de PR; sigue habiendo un solo check obligatorio, `CI monorepo`); servicio MongoDB replica set en Actions; las pruebas de contrato, base de datos y seguridad se suman al trabajo `Backend Go`; las pruebas de `ci-plan.cjs` siguen pasando; acciones fijadas a commits completos, sin secretos, sin `pull_request_target` y sin cachés (reglas de `docs/CI_MONOREPO.md`); `nightly.yml` con mutación, `k6` y ZAP (pueden ser marcadores hasta T008–T010); `dependabot` suma `gomod` y `docker`
   - Refs: RF-02, RF-06 · CA-02 · P-04
 
 ## Fase 2 — Pruebas por categoría (3–11 nov, conforme se integran los módulos)
@@ -66,7 +66,7 @@
   - Refs: RF-08 · CA-07 · P-07
 
 - [ ] **T010** [P] Escaneo de imagen y ZAP *baseline* (**P2**)
-  - Archivos: `.github/workflows/{ci.yml, nightly.yml}` (trabajos `trivy` y `zap`), `docs/seguridad.md`
+  - Archivos: `.github/workflows/{monorepo-ci.yml, nightly.yml}` (trabajos `trivy` y `zap`), `docs/seguridad.md`
   - Dueño: BE-B · Agente: `dev-go` · Depende de: T002
   - Aceptación: `trivy` sobre la imagen sin vulnerabilidades altas o críticas injustificadas; ZAP contra el entorno de composición; hallazgos triados en `docs/seguridad.md` (corregido / justificado)
   - Refs: RF-06 · CA-02

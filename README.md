@@ -5,7 +5,6 @@ Contexto completo: [`docs/VAIVEN_Idea_y_Objetivo.pdf`](docs/VAIVEN_Idea_y_Objeti
 
 Este repositorio contiene la **base de la metodología Spec Driven Development (SDD)** de los tres proyectos. Todavía **no hay código ni se han ejecutado tareas**: están definidos los archivos de gobierno y las **16 specs** (001–016; la 016 solo en backend) de backend y móvil y las 2 de la landing, con su plan y tareas. El calendario, el reparto entre 4 personas y las políticas confirmadas están en [`ROADMAP.md`](ROADMAP.md).
 
-
 | Proyecto | Stack | Carpeta |
 |---|---|---|
 | Backend | Go + chi + MongoDB (NoSQL) | [`backend/`](backend/) |
@@ -23,7 +22,6 @@ Este repositorio contiene la **base de la metodología Spec Driven Development (
 | `.opencode/agents/` | Subagentes propios (redactor de specs, desarrollo, pruebas, revisor…). |
 | `.opencode/skills/` | Skills con plantillas y listas de comprobación. |
 | `specs/001…016/` | `spec.md`, `plan.md` y `tasks.md` de cada fase: arquitectura base, servicios, cuenta, imágenes, objetos, búsqueda, reservas, chat, entrega y pagos, calificaciones, notificaciones, integración, publicación (Google Play / producción) IA (sugerencias por foto) y ML (recomendaciones), ambas en la v1.1, y pruebas y pipeline DevSecOps (siete categorías de pruebas, solo backend). La landing tiene `L001` (páginas legales) y `L002` (página principal). |
-| `specs/001…015/` | `spec.md`, `plan.md` y `tasks.md` de cada fase: arquitectura base, servicios, cuenta, imágenes, objetos, búsqueda, reservas, chat, entrega y pagos, calificaciones, notificaciones, integración, publicación (Google Play / producción) IA (sugerencias por foto) y ML (recomendaciones), ambas en la v1.1. La landing tiene `L001` (páginas legales) y `L002` (página principal). |
 
 ## Cómo se usa con OpenCode
 

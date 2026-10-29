@@ -1,7 +1,7 @@
 # Tareas 006 — Búsqueda (backend)
 
 - **Dueño:** BE-B · **Estado:** sin ejecutar · `[P]` = paralelizable
-- Puede arrancar con documentos de `items` sembrados a mano según el modelo de 005 plan §3; se integra cuando 005 esté en `main`.
+- Puede arrancar con documentos de `items` sembrados a mano según el modelo de 005 plan §3; se integra cuando 005 esté en `develop`.
 
 - [ ] **T001** Contrato OpenAPI de búsqueda
   - Archivos: `api/paths/search.yaml`, `api/openapi.yaml` (agregar `$ref`)

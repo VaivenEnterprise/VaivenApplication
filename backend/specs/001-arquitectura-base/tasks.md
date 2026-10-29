@@ -146,11 +146,11 @@
   - Aceptación: build multi‑etapa; binario estático; imagen final `distroless`, usuario no root; `docker build .` termina sin errores
   - Refs: plan P-09 · Art. VI
 
-- [ ] **T020** [P] Verificación automática (CI)
-  - Archivos: `.github/workflows/ci.yml`
+- [ ] **T020** [P] Activar la CI existente del repositorio con el backend
+  - Archivos: `go.mod`, `.golangci.yml` (ya previsto), ajustes mínimos en `.github/workflows/monorepo-ci.yml` solo si hace falta
   - Agente: `dev-go`
   - Depende de: T002, T004
-  - Aceptación: en cada *push* y *pull request* ejecuta `gofmt` (falla si hay diferencias), `go vet`, `golangci-lint`, `go test ./... -race -cover` y `go build ./...`
+  - Aceptación: el repositorio **ya tiene** `monorepo-ci.yml` (ver `docs/CI_MONOREPO.md`); con `backend/go.mod` presente el trabajo `Backend Go` deja de omitirse y pasa: `gofmt`, `go mod tidy -diff` sin cambios, `go vet`, `golangci-lint`, `go test -race` con ≥ 80 % en `domain`/`usecase`, pruebas con etiqueta `integration`, compilación y `govulncheck`; **no se crea un segundo `ci.yml`**
   - Refs: RF-15 · H-08 · Art. VII
 
 ## Fase 4 — Cierre
