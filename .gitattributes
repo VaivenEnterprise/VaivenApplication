@@ -1,0 +1,18 @@
+# Mantener LF en los archivos de texto para CI y desarrollo multiplataforma.
+* text=auto eol=lf
+
+# Scripts de Windows.
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Archivos binarios.
+*.pdf binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.webp binary
+*.zip binary
+*.woff binary
+*.woff2 binary

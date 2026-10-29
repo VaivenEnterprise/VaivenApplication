@@ -1,0 +1,29 @@
+name: PR branch naming
+
+on:
+  pull_request:
+    branches: [develop, main]
+    types: [opened, reopened, synchronize, edited, ready_for_review]
+
+permissions: {}
+
+jobs:
+  branch-name:
+    name: Validar nombre de rama
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Validar tipo, clave Jira y descripcion
+        env:
+          PR_HEAD_REF: ${{ github.head_ref }}
+        shell: bash
+        run: |
+          node <<'NODE'
+          const branch = process.env.PR_HEAD_REF || '';
+          const pattern = /^(feat|fix|chore|docs|style|refactor|perf|test|build|ci|revert|hotfix|release)\/SCRUM-[1-9][0-9]*-[A-Za-z]+(?:-[A-Za-z]+)*$/;
+          if (!pattern.test(branch)) {
+            console.error('::error::Nombre de rama invalido. Usa Tipo/SCRUM-123-Descripcion-con-guiones. Tipos: feat, fix, chore, docs, style, refactor, perf, test, build, ci, revert, hotfix, release. SCRUM debe ir en mayusculas y el numero debe ser un entero positivo sin ceros iniciales. La descripcion solo admite letras A-Z/a-z y guiones entre palabras; sin numeros, acentos, espacios ni otros simbolos.');
+            process.exit(1);
+          }
+          console.log('Nombre de rama valido.');
+          NODE
