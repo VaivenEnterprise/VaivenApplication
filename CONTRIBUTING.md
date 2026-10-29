@@ -39,6 +39,8 @@ release/SCRUM-125-Preparar-version
 
 La validación de GitHub comprueba el formato, no la existencia ni el estado de la tarea en Jira. Tampoco comprueba todavía que una rama haya nacido de `develop` ni que un PR hacia `main` provenga de `release/`.
 
+Se permiten los PRs de sincronización de `main` hacia `develop` dentro del mismo repositorio y los PRs de la cuenta oficial `dependabot[bot]` con ramas `dependabot/` de este repositorio. Estas excepciones solo afectan al nombre, no a la revisión humana ni a los controles de seguridad.
+
 ## Revisiones y comprobaciones
 
 Las protecciones activas de `main` y `develop` exigen un PR, una aprobación y conversaciones resueltas. Nuevos cambios invalidan las aprobaciones anteriores. Están bloqueados el borrado y los force push, sin excepciones configuradas.
@@ -60,4 +62,6 @@ La excepción `[skip ci]` se usa solo para incorporar esta configuración inicia
 
 Antes de cambiar `backend/` o `mobile/`, sigue las instrucciones de su `AGENTS.md`, constitución y especificaciones.
 
-Describe en cada PR las pruebas que correspondan al cambio. El repositorio todavía no tiene código de aplicación ni pipelines de compilación o pruebas; esos controles se añadirán cuando se implemente cada proyecto.
+Describe en cada PR las pruebas que correspondan al cambio. La [CI del monorepo](docs/CI_MONOREPO.md) selecciona backend y mobile según los cambios y sus manifiestos. Mientras no exista código de aplicación, omite sus jobs y lo indica expresamente; al aparecer el proyecto, exige sus comandos de calidad, pruebas y revisión de dependencias. El check final `CI monorepo` debe ser obligatorio, no los jobs individuales que pueden omitirse.
+
+El workflow `Repository security` detecta secretos con Gitleaks y analiza los workflows con zizmor. Dependabot revisa las acciones semanalmente. Consulta [SECURITY.md](SECURITY.md) para conocer el alcance, la activación de checks obligatorios y las siguientes fases.

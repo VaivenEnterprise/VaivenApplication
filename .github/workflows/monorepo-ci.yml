@@ -1,0 +1,171 @@
+name: Monorepo CI
+
+on:
+  pull_request:
+    branches: [develop, main]
+    types: [opened, reopened, synchronize, edited, ready_for_review]
+  push:
+    branches: [develop, main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: monorepo-ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  plan:
+    name: Planificar CI
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      backend: ${{ steps.plan.outputs.backend }}
+      mobile: ${{ steps.plan.outputs.mobile }}
+      backend_state: ${{ steps.plan.outputs.backend_state }}
+      mobile_state: ${{ steps.plan.outputs.mobile_state }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '24'
+          package-manager-cache: false
+      - name: Probar reglas de seleccion y cobertura
+        run: node --test .github/scripts/ci-plan.test.cjs .github/scripts/coverage.test.cjs
+      - name: Detectar componentes y cambios
+        id: plan
+        run: node .github/scripts/ci-plan.cjs
+
+  backend:
+    name: Backend Go
+    needs: plan
+    if: ${{ needs.plan.outputs.backend == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: backend/go.mod
+          cache: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '24'
+          package-manager-cache: false
+      - name: Comprobar formato Go
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -d '' sources < <(git ls-files -z -- '*.go')
+          if (( ${#sources[@]} )); then
+            unformatted="$(gofmt -l "${sources[@]}")"
+            if [[ -n "$unformatted" ]]; then
+              printf '%s\n' "$unformatted"
+              exit 1
+            fi
+          fi
+      - name: Verificar dependencias
+        run: |
+          go mod download
+          go mod verify
+          go mod tidy -diff
+      - name: Analisis estatico Go
+        run: go vet ./...
+      - name: Lint Go
+        uses: golangci/golangci-lint-action@ba0d7d2ec06a0ea1cb5fa41b2e4a3ab91d21278a # v9.3.0
+        with:
+          version: v2.15.0
+          working-directory: backend
+          skip-cache: true
+          args: --timeout=5m
+      - name: Pruebas unitarias y cobertura
+        run: go test -race -covermode=atomic -coverprofile=coverage.out -timeout 5m ./...
+      - name: Exigir cobertura de domain y usecase
+        run: node ../.github/scripts/coverage.cjs go coverage.out
+      - name: Pruebas de integracion con Docker disponible
+        run: go test -tags=integration -race -timeout 10m ./...
+      - name: Compilar backend
+        run: go build ./...
+      - name: Revisar vulnerabilidades Go
+        run: |
+          go install golang.org/x/vuln/cmd/govulncheck@v1.9.0
+          "$(go env GOPATH)/bin/govulncheck" ./...
+
+  mobile:
+    name: Mobile Expo
+    needs: plan
+    if: ${{ needs.plan.outputs.mobile == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: mobile
+    env:
+      CI: 'true'
+      EXPO_PUBLIC_API_URL: https://api.example.invalid
+      EXPO_PUBLIC_APP_ENV: development
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '24'
+          package-manager-cache: false
+      - name: Instalar desde lockfile
+        run: npm ci --no-audit --no-fund
+      - name: Revisar tipos
+        run: npm run typecheck
+      - name: Lint
+        run: npm run lint
+      - name: Comprobar formato
+        run: npx --no-install prettier --check .
+      - name: Pruebas y cobertura de todas las fuentes
+        run: npm test -- --ci --runInBand --coverage --coverageReporters=json-summary --coverageReporters=text --collectCoverageFrom='src/**/*.{ts,tsx}'
+      - name: Exigir cobertura de lib y hooks
+        run: node ../.github/scripts/coverage.cjs mobile coverage/coverage-summary.json
+      - name: Revisar vulnerabilidades npm
+        run: npm audit --audit-level=high
+
+  result:
+    name: CI monorepo
+    if: ${{ always() }}
+    needs: [plan, backend, mobile]
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    permissions: {}
+    steps:
+      - name: Comprobar resultados y publicar resumen
+        env:
+          PLAN_RESULT: ${{ needs.plan.result }}
+          BACKEND_RESULT: ${{ needs.backend.result }}
+          MOBILE_RESULT: ${{ needs.mobile.result }}
+          RUN_BACKEND: ${{ needs.plan.outputs.backend }}
+          RUN_MOBILE: ${{ needs.plan.outputs.mobile }}
+          BACKEND_STATE: ${{ needs.plan.outputs.backend_state }}
+          MOBILE_STATE: ${{ needs.plan.outputs.mobile_state }}
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          if (process.env.PLAN_RESULT !== 'success') throw new Error('No se pudo planificar la CI.');
+          const labels = {not_initialized:'Sin inicializar: no se ejecutaron pruebas de aplicacion.', unchanged:'Sin cambios: se omite este componente.', run:'Comprobaciones ejecutadas.'};
+          const summary = ['## CI del monorepo', ''];
+          for (const name of ['BACKEND', 'MOBILE']) {
+            const requested = process.env['RUN_' + name] === 'true';
+            const result = process.env[name + '_RESULT'];
+            if (requested && result !== 'success') throw new Error(name + ': ' + result);
+            if (!requested && result !== 'skipped') throw new Error(name + ': resultado inesperado ' + result);
+            summary.push('- ' + name + ': ' + labels[process.env[name + '_STATE']]);
+          }
+          fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, summary.join('\n') + '\n');
+          console.log(summary.join('\n'));
+          NODE

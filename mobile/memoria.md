@@ -2,17 +2,16 @@
 
 Memoria viva del proyecto. Los agentes la leen después de `constitution.md` y la **actualizan** al cerrar cada tarea relevante. No contradice la constitución: si hay conflicto, gana la constitución.
 
-_Última actualización: 2026-10-26_
+_Última actualización: 2026-10-28_
 
 ## 1. Estado actual
 
 | Elemento | Estado |
 |---|---|
-| Constitución | v1.0.0 ratificada |
+| Constitución | v1.1.0 (enmendada 2026-10-28) |
 | Spec 001 — Arquitectura base | Redactada, pendiente de aprobación humana |
-| Plan 001 | Redactado |
-| Tareas 001 | Redactadas, **sin ejecutar** |
-| Specs funcionales (002+) | No iniciadas (se definen en la siguiente clase) |
+| Specs 002–013 | Redactadas (spec, plan, tasks), pendientes de aprobación; ver `../ROADMAP.md` |
+| Tareas | **Sin ejecutar**; arranque planeado 2026-10-29 |
 | Código | Ninguno todavía |
 | Versión de Expo SDK | _Por fijar en T001 (SDK estable vigente)_ |
 
@@ -30,6 +29,10 @@ _Última actualización: 2026-10-26_
 | D-008 | 2026-10-26 | Documentos y prompts de agentes en español | Preferencia del equipo | Art. XI |
 | D-009 | 2026-10-26 | `task.md` se nombra `tasks.md` | Convención estándar de SDD | Art. I |
 | D-010 | 2026-10-26 | Gestor de paquetes `npm` | Simplicidad; sin herramientas extra | Art. X |
+| D-011 | 2026-10-28 | Fotos: redimensionar y subir directo a Cloudinary con firma del backend | Servicio gratuito; la app nunca ve el secreto | Art. II.4 (enmienda 1.1.0) |
+| D-012 | 2026-10-28 | Trabajo en paralelo: dueño por spec, concha de navegación en spec 003, i18n y claves por funcionalidad | 4 personas con OpenCode propio sin pisarse | Art. XIII (enmienda 1.1.0) |
+| D-013 | 2026-10-28 | Formularios con `react-hook-form` + `zod`; sesión con contexto de React (sin Zustand) | Menos código y dependencias | Art. X.3, X.4 |
+| D-014 | 2026-10-28 | Alcance: núcleo completo sin IA ni página pública; código congelado 15-nov | Plazo 20-nov con colchón de 5 días | `../ROADMAP.md` |
 
 ## 3. Modelos gratuitos asignados (OpenCode Zen)
 
@@ -83,3 +86,20 @@ _(Los agentes agregan aquí hallazgos útiles y breves, uno por línea, con fech
 - Los modelos gratuitos pueden desaparecer o limitar el uso sin aviso → mantener alternos listados en la sección 3.
 - Algunos modelos gratuitos pueden usar los datos enviados para mejorarse → **no pegar secretos ni datos personales reales** en las conversaciones con agentes.
 - Los modelos pueden proponer APIs obsoletas de Expo/React Native → verificar con `npx expo install --check` y la documentación de la versión fijada.
+
+## 8. Decisiones de producto del 28 de oct (noche)
+
+| # | Decisión | Efecto |
+|---|---|---|
+| D-101 | Políticas POL-01…17 **confirmadas**; POL-02 pasa a **máximo 7 días** | Specs 006, 007 (backend y móvil) actualizadas |
+| D-102 | Categorías (POL-14): herramientas manuales, herramientas eléctricas, construcción y jardinería, movilidad (patines, patinetas, bicicletas), deportes, hogar, otros | Spec 005 |
+| D-103 | Valor declarado **no** visible a terceros | Spec 005 |
+| D-104 | Hosting gratuito: **Render** (`vaiven-staging` y `vaiven-prod`) | Specs 002 y 013 |
+| D-105 | Identificador de paquete `mx.vaiven.app` (permanente tras publicar) | Spec móvil 002 y 013 |
+| D-106 | Meta original: primera versión pública en Google Play el 20 de nov (ver D-110). Solo Google Play; sin App Store | Specs 013; ROADMAP §1 |
+| D-107 | Reportes de contenido y filtro de texto pasan a **P1 no recortables** (política de contenido de usuarios de Google Play) | Spec 011 |
+| D-108 | Se agrega el proyecto `landing/` (sitio informativo estático, gratuito) con las páginas legales que exige Play | `landing/`, ROADMAP |
+| D-109 | La baja de cuenta **anonimiza** los datos personales (POL-17) | Spec backend 003 |
+| D-110 | La cuenta de Google Play se compra el 29–30 oct: prueba cerrada 1–14 nov, solicitud 15 nov, publicación 1.0 (sin IA) meta 20 nov / estimada 22–25 nov. La IA va en la spec 014 como v1.1 posterior, detrás de un interruptor | ROADMAP §1 y §3; specs 013 |
+| D-111 | **Entrega oficial: 1–4 dic con todos los specs completos.** Se agrega la spec 014 (IA: sugerir título y categoría por foto) como P1, v1.1, del 16 al 24 nov detrás del interruptor `AI_ENABLED`; proveedor gratuito y alcance académico por confirmar | ROADMAP §1 y §3; specs 014 |
+| D-112 | ML = **recomendaciones** (spec 015): recomendador híbrido propio (coseno objeto-objeto + contenido) evaluado contra popularidad; IA = Gemini (spec 014). Ambas v1.1, 16–24 nov, con interruptores | ROADMAP §3; specs 014 y 015 |

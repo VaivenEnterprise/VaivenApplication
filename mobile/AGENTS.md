@@ -4,7 +4,7 @@ Instrucciones para cualquier agente de OpenCode que trabaje en `mobile/`. Este a
 
 ## 1. Orden de lectura obligatorio
 
-1. `constitution.md` — reglas no negociables (artículos I a XII).
+1. `constitution.md` — reglas no negociables (artículos I a XIII). Para saber qué spec te toca, quién es el dueño y en qué orden, lee `../ROADMAP.md`.
 2. `memoria.md` — decisiones, estado actual y aprendizajes.
 3. `specs/<spec-activa>/spec.md` → `plan.md` → `tasks.md`.
 4. Solo entonces, el código.
@@ -85,6 +85,15 @@ La app necesita el backend en marcha. En emulador Android, `localhost` del equip
 9. Si un comando falla dos veces con el mismo error, **detente** y explica el problema en lugar de probar variaciones al azar.
 10. Responde en español; el código, los identificadores y los mensajes de commit técnicos, en inglés.
 
-## 8. Alcance actual
+## 8. Trabajo en paralelo (4 personas, Art. XIII)
 
-Solo está permitido trabajar en `specs/001-arquitectura-base/` (arquitectura base, sin funcionalidad de negocio). Las specs funcionales (`002-*` y siguientes) aún no existen.
+- Trabaja **solo en la spec asignada** a tu persona en `../ROADMAP.md` y solo si su contrato (`../backend/api/paths/<modulo>.yaml`) ya está publicado.
+- Rama por tarea: `feat/<spec>-<tarea>` (p. ej. `feat/007-T004`). PR pequeño, revisión cruzada, `main` siempre verde.
+- No edites `src/app/_layout.tsx` ni `src/app/(tabs)/_layout.tsx` (los crea la spec 003). Agrega archivos solo dentro de tu carpeta de ruta y de tu feature.
+- Textos en `src/i18n/<funcionalidad>.ts` (una línea de reexport en `es-MX.ts`); claves de consulta en `features/<f>/keys.ts`.
+- Reutiliza `components/ui/`; no dupliques componentes.
+- `memoria.md` es solo-anexar: escribe al final de tu sección con tu etiqueta (`[MO-A]` o `[MO-B]`).
+
+## 9. Alcance
+
+Specs `001` a `012` en `specs/`, en el orden y con los dueños de `../ROADMAP.md`. Las tareas aún **no se ejecutan** hasta la fecha de arranque del calendario y la aprobación de cada spec.
