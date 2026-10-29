@@ -3,7 +3,11 @@
 Plataforma móvil de préstamo y renta de objetos entre personas (México, MXN).
 Contexto completo: [`docs/VAIVEN_Idea_y_Objetivo.pdf`](docs/VAIVEN_Idea_y_Objetivo.pdf).
 
+<<<<<<< Updated upstream
 Este repositorio contiene la **base de la metodología Spec Driven Development (SDD)** de los dos proyectos. Todavía **no hay código ni se han ejecutado tareas**: solo están definidos los archivos de gobierno y la spec de arquitectura base.
+=======
+Este repositorio contiene la **base de la metodología Spec Driven Development (SDD)** de los tres proyectos. Todavía **no hay código ni se han ejecutado tareas**: están definidos los archivos de gobierno y las **16 specs** (001–016; la 016 solo en backend) de backend y móvil y las 2 de la landing, con su plan y tareas. El calendario, el reparto entre 4 personas y las políticas confirmadas están en [`ROADMAP.md`](ROADMAP.md).
+>>>>>>> Stashed changes
 
 | Proyecto | Stack | Carpeta |
 |---|---|---|
@@ -20,7 +24,11 @@ Este repositorio contiene la **base de la metodología Spec Driven Development (
 | `opencode.json` | Modelos gratuitos por agente, instrucciones cargadas y permisos. |
 | `.opencode/agents/` | Subagentes propios (redactor de specs, desarrollo, pruebas, revisor…). |
 | `.opencode/skills/` | Skills con plantillas y listas de comprobación. |
+<<<<<<< Updated upstream
 | `specs/001-arquitectura-base/` | `spec.md`, `plan.md` y `tasks.md` de la arquitectura base. |
+=======
+| `specs/001…016/` | `spec.md`, `plan.md` y `tasks.md` de cada fase: arquitectura base, servicios, cuenta, imágenes, objetos, búsqueda, reservas, chat, entrega y pagos, calificaciones, notificaciones, integración, publicación (Google Play / producción) IA (sugerencias por foto) y ML (recomendaciones), ambas en la v1.1, y pruebas y pipeline DevSecOps (siete categorías de pruebas, solo backend). La landing tiene `L001` (páginas legales) y `L002` (página principal). |
+>>>>>>> Stashed changes
 
 ## Cómo se usa con OpenCode
 
@@ -38,14 +46,6 @@ opencode          # abre OpenCode en ese proyecto
 - Los Artículos **IV** (contrato de API) y **V** (dinero, fechas, idioma) son equivalentes en ambas constituciones.
 - La app móvil consume `GET /api/v1/meta` del backend en su pantalla de diagnóstico.
 - Si cambias un artículo compartido, cámbialo en **ambas** constituciones y registra la decisión en ambas `memoria.md`.
-
-
-## Colaboración y seguridad
-
-- [Guía de contribución y flujo de ramas](CONTRIBUTING.md).
-- [Controles de seguridad y siguientes fases del monorepo](SECURITY.md).
-- [CI por componente y check final obligatorio](docs/CI_MONOREPO.md).
-- Los PRs incluyen validación de nombres y escaneos de secretos y workflows. El bloqueo por checks se configura en el Ruleset después de comprobar su ejecución.
 
 ## Estado
 

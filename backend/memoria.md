@@ -75,3 +75,24 @@ _(Los agentes agregan aquí hallazgos útiles y breves, uno por línea, con fech
 - Los modelos gratuitos pueden desaparecer o limitar el uso sin aviso → mantener alternos listados en la sección 3.
 - Algunos modelos gratuitos pueden usar los datos enviados para mejorarse → **no pegar secretos ni datos personales reales** en las conversaciones con agentes.
 - `make` no viene en Windows por defecto → usar Git Bash/WSL o los comandos equivalentes.
+<<<<<<< Updated upstream
+=======
+
+## 8. Decisiones de producto del 28 de oct (noche)
+
+| # | Decisión | Efecto |
+|---|---|---|
+| D-101 | Políticas POL-01…17 **confirmadas**; POL-02 pasa a **máximo 7 días** | Specs 006, 007 (backend y móvil) actualizadas |
+| D-102 | Categorías (POL-14): herramientas manuales, herramientas eléctricas, construcción y jardinería, movilidad (patines, patinetas, bicicletas), deportes, hogar, otros | Spec 005 |
+| D-103 | Valor declarado **no** visible a terceros | Spec 005 |
+| D-104 | Hosting gratuito: **Render** (`vaiven-staging` y `vaiven-prod`) | Specs 002 y 013 |
+| D-105 | Identificador de paquete `mx.vaiven.app` (permanente tras publicar) | Spec móvil 002 y 013 |
+| D-106 | Meta original: primera versión pública en Google Play el 20 de nov (ver D-110). Solo Google Play; sin App Store | Specs 013; ROADMAP §1 |
+| D-107 | Reportes de contenido y filtro de texto pasan a **P1 no recortables** (política de contenido de usuarios de Google Play) | Spec 011 |
+| D-108 | Se agrega el proyecto `landing/` (sitio informativo estático, gratuito) con las páginas legales que exige Play | `landing/`, ROADMAP |
+| D-109 | La baja de cuenta **anonimiza** los datos personales (POL-17) | Spec backend 003 |
+| D-110 | La cuenta de Google Play se compra el 29–30 oct: prueba cerrada 1–14 nov, solicitud 15 nov, publicación 1.0 (sin IA) meta 20 nov / estimada 22–25 nov. La IA va en la spec 014 como v1.1 posterior, detrás de un interruptor | ROADMAP §1 y §3; specs 013 |
+| D-111 | **Entrega oficial: 1–4 dic con todos los specs completos.** Se agrega la spec 014 (IA: sugerir título y categoría por foto) como P1, v1.1, del 16 al 24 nov detrás del interruptor `AI_ENABLED`; proveedor gratuito y alcance académico por confirmar | ROADMAP §1 y §3; specs 014 |
+| D-112 | ML = **recomendaciones** (spec 015): recomendador híbrido propio (coseno objeto-objeto + contenido) evaluado contra popularidad; IA = Gemini (spec 014). Ambas v1.1, 16–24 nov, con interruptores | ROADMAP §3; specs 014 y 015 |
+| D-113 | **Siete categorías de pruebas obligatorias** (unitarias, integración, contrato, base de datos, mutación, rendimiento, seguridad) y pipeline DevSecOps; constitución backend **v1.2.0** (Art. VII y VIII); spec 016. Equivalen a los proyectos de la solución de referencia `WebAPIDevSecOps` | Constitución; spec 016 |
+>>>>>>> Stashed changes
