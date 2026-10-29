@@ -4,7 +4,7 @@ Instrucciones para cualquier agente de OpenCode que trabaje en `backend/`. Este 
 
 ## 1. Orden de lectura obligatorio
 
-1. `constitution.md` — reglas no negociables (artículos I a XI).
+1. `constitution.md` — reglas no negociables (artículos I a XII). Para saber qué spec te toca, quién es el dueño y en qué orden, lee `../ROADMAP.md`.
 2. `memoria.md` — decisiones, estado actual y aprendizajes.
 3. `specs/<spec-activa>/spec.md` → `plan.md` → `tasks.md`.
 4. Solo entonces, el código.
@@ -86,6 +86,15 @@ Si `make` no está disponible en Windows, usar Git Bash o WSL, o ejecutar el com
 8. Si un comando falla dos veces con el mismo error, **detente** y explica el problema en lugar de probar variaciones al azar.
 9. Responde en español; el código, los identificadores y los mensajes de commit técnicos, en inglés.
 
-## 8. Alcance actual
+## 8. Trabajo en paralelo (4 personas, Art. XII)
 
-Solo está permitido trabajar en `specs/001-arquitectura-base/` (arquitectura base, sin funcionalidad de negocio). Las specs funcionales (`002-*` y siguientes) aún no existen.
+- Trabaja **solo en la spec asignada** a tu persona en `../ROADMAP.md` y solo si sus dependencias ya están integradas en `main`.
+- Rama por tarea: `feat/<spec>-<tarea>` (p. ej. `feat/005-T003`). PR pequeño, revisión cruzada, `main` siempre verde.
+- Tu primera tarea de cada spec publica el contrato en `api/paths/<modulo>.yaml`.
+- Registra tu módulo con **una línea** en `cmd/api/modules.go`. No edites rutas ni archivos de otros módulos.
+- Los puertos compartidos (`notify.Notifier`, `moderation.Checker`, `chat.Opener`, `images.Service`) ya existen con implementación vacía: úsalos, no los reimplementes.
+- `memoria.md` es solo-anexar: escribe al final de tu sección con tu etiqueta (`[BE-A]` o `[BE-B]`).
+
+## 9. Alcance
+
+Specs `001` a `012` en `specs/`, en el orden y con los dueños de `../ROADMAP.md`. Las tareas aún **no se ejecutan** hasta la fecha de arranque del calendario y la aprobación de cada spec.

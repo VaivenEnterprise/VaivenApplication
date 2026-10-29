@@ -1,6 +1,6 @@
 # Constitución de la App Móvil — VAIVÉN
 
-> **Versión 1.0.0** · Ratificada el 2026-10-26 · Proyecto: `mobile/` (React Native + Expo + TypeScript)
+> **Versión 1.1.0** · Ratificada el 2026-10-26 · Enmendada el 2026-10-28 (Cloudinary para imágenes; dependencias previstas; Art. XIII trabajo en paralelo) · Proyecto: `mobile/` (React Native + Expo + TypeScript)
 >
 > Esta es la máxima autoridad técnica de la app móvil. Si `AGENTS.md`, `memoria.md`, `spec.md`, `plan.md`, `tasks.md`, un agente o una skill la contradicen, **gana la constitución** y el otro archivo debe corregirse.
 > Comparte con `../backend/constitution.md` el contrato de API (Art. IV de ambas) y las reglas de dinero, fechas e idioma (Art. V de ambas). Deben mantenerse idénticas en esos puntos.
@@ -29,6 +29,7 @@ La app móvil es el cliente de la plataforma. **Solo habla con la API del backen
 1. Los datos se obtienen y modifican **solo** mediante la API REST del backend (`/api/v1`). Prohibido conectarse a MongoDB o a cualquier base desde la app.
 2. La app puede guardar localmente solo cosas efímeras o de preferencia (caché de consultas, sesión en almacenamiento seguro). No hay lógica de negocio crítica del lado del cliente: el servidor decide y valida.
 3. La URL base de la API proviene de configuración de entorno, nunca de una constante en el código.
+4. **Imágenes (enmienda 1.1.0):** la app pide una firma al backend y sube el archivo **directamente a Cloudinary**; después envía al backend solo la referencia (`publicId`, ancho, alto, formato, bytes, `delivery`). Antes de subir, las fotos se redimensionan (lado mayor ≤ 1600 px) y se comprimen (JPEG, calidad ≈ 0.8). La app nunca conoce el `API secret`.
 
 ### Art. III — TypeScript estricto
 1. `strict: true` en `tsconfig.json`. Prohibido `any` implícito y, salvo justificación escrita, `any` explícito y `@ts-ignore`.
@@ -52,6 +53,7 @@ La app móvil es el cliente de la plataforma. **Solo habla con la API del backen
 ### Art. V — Dinero, fechas e idioma
 1. Moneda única: **MXN**. Los importes viajan y se guardan como **enteros en centavos** (`…Cents`). Prohibido usar `number` con decimales para operar dinero; la conversión a texto ocurre solo al mostrar (`formatMXN`).
 2. Fechas en **UTC** en la red; se muestran en la zona horaria del dispositivo con `Intl` (`es-MX`).
+   - **Excepción (v1.1.0):** los periodos de reserva (`startDate`, `endDate`) son **fechas de calendario** `YYYY-MM-DD` (zona `America/Mexico_City`). Se manejan como cadenas con utilidades puras; no se convierten con `new Date()` ni a la zona del teléfono.
 3. Todo texto visible está en **español (es-MX)** y centralizado en `src/i18n/es-MX.ts`. Prohibido texto visible literal dentro de componentes. Identificadores de código en inglés.
 4. VAIVÉN **no ejecuta cobros ni verifica pagos**: la app nunca debe sugerir que un pago fue procesado o verificado automáticamente.
 
@@ -82,7 +84,8 @@ La app móvil es el cliente de la plataforma. **Solo habla con la API del backen
 ### Art. X — Simplicidad y dependencias mínimas
 1. Se prefieren los módulos de Expo (`expo-*`) y la API de React Native sobre bibliotecas de terceros. Una dependencia nueva exige justificación en `plan.md` y registro en `memoria.md`.
 2. Prohibido construir abstracciones "por si acaso": solo lo que una spec vigente necesita.
-3. Estado: datos del servidor con **TanStack Query**; estado local con `useState`/`useReducer`; un almacén global (p. ej. Zustand) solo si una spec lo justifica.
+3. Estado: datos del servidor con **TanStack Query**; estado local con `useState`/`useReducer`; la sesión con un contexto de React; un almacén global (p. ej. Zustand) solo si una spec lo justifica.
+4. **Dependencias previstas** (ya aprobadas, se registran en `memoria.md` al instalarse): `react-hook-form` y `@hookform/resolvers` (formularios); `expo-image-picker`, `expo-image-manipulator`, `expo-image` (fotos); `expo-location` (zona aproximada); `@react-native-community/datetimepicker` (fechas); `expo-camera` (escaneo QR); `react-native-qrcode-svg` y `react-native-svg` (generar QR); `expo-notifications` y `expo-device` (push); `expo-linking` (enlaces profundos). Se instalan con `npx expo install`.
 
 ### Art. XI — Desarrollo asistido con OpenCode y modelos gratuitos
 1. Este proyecto se desarrolla **100 % con OpenCode** y **modelos gratuitos**. Ninguna herramienta o modelo de pago es requisito.
@@ -94,6 +97,15 @@ La app móvil es el cliente de la plataforma. **Solo habla con la API del backen
 ### Art. XII — Gobernanza y enmiendas
 1. Cambiar la constitución requiere: propuesta escrita, registro en `memoria.md` (sección *Decisiones*), incremento de versión y revisión de coherencia de todos los archivos (incluida la constitución del backend si toca un artículo compartido).
 2. Versionado: **MAJOR** cambia o elimina un principio; **MINOR** agrega un principio o sección; **PATCH** aclara redacción.
+
+### Art. XIII — Trabajo en paralelo (4 personas, cada una con su OpenCode)
+1. Cada spec tiene **una persona dueña** (ver `../ROADMAP.md`). Solo el dueño edita el `tasks.md` y el código de su spec; si necesita tocar algo de otra persona, lo avisa antes.
+2. **Contrato primero:** la app se desarrolla contra `../backend/api/paths/<modulo>.yaml`. Mientras el backend no esté listo, la persona usa datos simulados en pruebas, nunca endpoints inventados.
+3. **Concha de navegación:** `src/app/_layout.tsx` y `src/app/(tabs)/_layout.tsx` los crea la spec 003 con todas las pestañas definidas (Explorar, Mis objetos, Actividad, Mensajes, Perfil). Las demás specs solo agregan archivos dentro de su propia carpeta de ruta.
+4. **Textos por funcionalidad:** `src/i18n/<funcionalidad>.ts` por spec, reexportado en `src/i18n/es-MX.ts` con **una línea**. Igual con las claves de consulta (`features/<f>/keys.ts`).
+5. **Componentes compartidos:** un componente nuevo de `components/ui/` solo lo crea el dueño de la spec que lo necesita primero y lo avisa; las demás lo reutilizan sin copiarlo.
+6. **Ramas y PR:** una rama por tarea `feat/<spec>-<tarea>`, PR pequeño (≈ 400 líneas), revisión cruzada por otra persona, `main` siempre verde (typecheck + lint + pruebas).
+7. **`memoria.md` es solo-anexar:** cada persona agrega líneas al final de su sección con su etiqueta (`[MO-A]`, `[MO-B]`); ante un conflicto se conservan ambas.
 
 ---
 
@@ -107,6 +119,10 @@ La app móvil es el cliente de la plataforma. **Solo habla con la API del backen
 | Datos remotos | `@tanstack/react-query` v5 + cliente `fetch` propio |
 | Validación | `zod` |
 | Almacenamiento seguro | `expo-secure-store` |
+| Formularios | `react-hook-form` + `zod` |
+| Imágenes | `expo-image-picker`, `expo-image-manipulator`, `expo-image`; subida directa a Cloudinary con firma del backend |
+| QR | `expo-camera` (escanear), `react-native-qrcode-svg` (generar) |
+| Notificaciones | `expo-notifications` (push de Expo) |
 | Estilos | `StyleSheet` de React Native + *tokens* en `src/theme/` |
 | Pruebas | Jest + `jest-expo` + `@testing-library/react-native` |
 | Calidad | ESLint (`eslint-config-expo`) + Prettier + `tsc --noEmit` |

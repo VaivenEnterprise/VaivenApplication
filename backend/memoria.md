@@ -2,17 +2,16 @@
 
 Memoria viva del proyecto. Los agentes la leen después de `constitution.md` y la **actualizan** al cerrar cada tarea relevante. No contradice la constitución: si hay conflicto, gana la constitución.
 
-_Última actualización: 2026-10-26_
+_Última actualización: 2026-10-28_
 
 ## 1. Estado actual
 
 | Elemento | Estado |
 |---|---|
-| Constitución | v1.0.0 ratificada |
+| Constitución | v1.1.0 (enmendada 2026-10-28) |
 | Spec 001 — Arquitectura base | Redactada, pendiente de aprobación humana |
-| Plan 001 | Redactado |
-| Tareas 001 | Redactadas, **sin ejecutar** |
-| Specs funcionales (002+) | No iniciadas (se definen en la siguiente clase) |
+| Specs 002–013 | Redactadas (spec, plan, tasks), pendientes de aprobación; ver `../ROADMAP.md` |
+| Tareas | **Sin ejecutar**; arranque planeado 2026-10-29 |
 | Código | Ninguno todavía |
 
 ## 2. Decisiones (registro tipo ADR)
@@ -27,6 +26,10 @@ _Última actualización: 2026-10-26_
 | D-006 | 2026-10-26 | Solo OpenCode + modelos gratuitos de Zen | Requisito del curso | Art. X |
 | D-007 | 2026-10-26 | Documentos y prompts de agentes en español | Preferencia del equipo | Art. X |
 | D-008 | 2026-10-26 | `task.md` se nombra `tasks.md` | Convención estándar de SDD | Art. I |
+| D-009 | 2026-10-28 | Imágenes en Cloudinary (capa gratuita); MongoDB guarda solo referencias; sin SDK | Decisión del equipo: servicio gratuito y rápido | Art. II.4, VI.7 (enmienda 1.1.0) |
+| D-010 | 2026-10-28 | Trabajo en paralelo: dueño por spec, contrato primero, módulos con una línea de registro, puertos compartidos | 4 personas con OpenCode propio sin pisarse | Art. XII (enmienda 1.1.0) |
+| D-011 | 2026-10-28 | Autenticación con JWT de acceso + refresh rotativo, `argon2id` | Estándar para API móvil sin sesiones de servidor | Art. VI, VIII.4 |
+| D-012 | 2026-10-28 | Alcance: núcleo completo sin IA ni página pública; código congelado 15-nov | Plazo 20-nov con colchón de 5 días | `../ROADMAP.md` |
 
 ## 3. Modelos gratuitos asignados (OpenCode Zen)
 
@@ -75,8 +78,6 @@ _(Los agentes agregan aquí hallazgos útiles y breves, uno por línea, con fech
 - Los modelos gratuitos pueden desaparecer o limitar el uso sin aviso → mantener alternos listados en la sección 3.
 - Algunos modelos gratuitos pueden usar los datos enviados para mejorarse → **no pegar secretos ni datos personales reales** en las conversaciones con agentes.
 - `make` no viene en Windows por defecto → usar Git Bash/WSL o los comandos equivalentes.
-<<<<<<< Updated upstream
-=======
 
 ## 8. Decisiones de producto del 28 de oct (noche)
 
@@ -95,4 +96,3 @@ _(Los agentes agregan aquí hallazgos útiles y breves, uno por línea, con fech
 | D-111 | **Entrega oficial: 1–4 dic con todos los specs completos.** Se agrega la spec 014 (IA: sugerir título y categoría por foto) como P1, v1.1, del 16 al 24 nov detrás del interruptor `AI_ENABLED`; proveedor gratuito y alcance académico por confirmar | ROADMAP §1 y §3; specs 014 |
 | D-112 | ML = **recomendaciones** (spec 015): recomendador híbrido propio (coseno objeto-objeto + contenido) evaluado contra popularidad; IA = Gemini (spec 014). Ambas v1.1, 16–24 nov, con interruptores | ROADMAP §3; specs 014 y 015 |
 | D-113 | **Siete categorías de pruebas obligatorias** (unitarias, integración, contrato, base de datos, mutación, rendimiento, seguridad) y pipeline DevSecOps; constitución backend **v1.2.0** (Art. VII y VIII); spec 016. Equivalen a los proyectos de la solución de referencia `WebAPIDevSecOps` | Constitución; spec 016 |
->>>>>>> Stashed changes

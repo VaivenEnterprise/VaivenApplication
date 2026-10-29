@@ -42,9 +42,9 @@ Cada persona trabaja con su propio OpenCode. Las parejas comparten spec de punta
 
 | Rol | Persona | Pareja | Dueña de las specs |
 |---|---|---|---|
-| **BE-A** (backend) | _(completar)_ | MO-A | 003, 005, 007, 009, 014, **016 (contrato, mutación, informe)** |
+| **BE-A** (backend) | _(completar)_ | MO-A | 003, 005, 007, 009 |
 | **MO-A** (móvil) | _(completar)_ | BE-A | 003, 005, 007, 009 |
-| **BE-B** (backend) | _(completar)_ | MO-B | 002, 004, 006, 008, 010, 011, 015, **016 (CI y seguridad, base de datos, rendimiento)** |
+| **BE-B** (backend) | _(completar)_ | MO-B | 002, 004, 006, 008, 010, 011 |
 | **MO-B** (móvil) | _(completar)_ | BE-B | 002, 004, 006, 008, 010, 011, **013 móvil**, **landing** |
 
 El **administrador del repositorio** (quien paga y administra la cuenta de Google Play) es responsable de la cuenta, los testers y las respuestas de Google; MO-B prepara los artefactos (AAB, ficha, landing) y BE-B el backend de producción (backend 013).
@@ -72,7 +72,6 @@ Prioridad: **P0** = sin esto no hay app · **P1** = esperado · **P2** = recorta
 | 013 | Publicación en Google Play (móvil) y producción (backend) | Ficha, cumplimiento, prueba cerrada, producción; backend de producción | MO-B / BE-B + administrador | P0 | 001 (inicio), 012 (cierre) | 30 oct–20 nov |
 | 014 | **IA (v1.1, después de la 1.0)** | Sugerir título y categoría a partir de una foto, siempre con revisión de quien publica (proveedor gratuito; interruptor `AI_ENABLED`) | BE-A / MO-A (+ MO-B cumplimiento) | P1 | 004, 005, 011, 013 | 16–24 nov |
 | 015 | **ML: recomendaciones (v1.1)** | «Recomendado para ti»: recomendador híbrido propio (colaborativo objeto-objeto + contenido), evaluado con Hit@10/Recall@10/MRR contra popularidad; interruptor `RECO_ENABLED` | BE-B / MO-B | P1 | 005, 006, 007, 013 | 16–24 nov |
-| 016 | **Pruebas y pipeline DevSecOps** (requisito del curso) | Siete categorías de pruebas (unitarias, integración, contrato, base de datos, mutación, rendimiento, seguridad) equivalentes a la solución `WebAPIDevSecOps`; pipeline CI/CD | BE-A + BE-B | P1 | 001 (fase 1); cada módulo (fase 2); 012 | 30 oct–15 nov |
 | L001 | Landing: base y páginas legales | Sitio estático, privacidad, términos, eliminación de cuenta, publicación gratuita | MO-B | P0 | — | 30 oct–1 nov |
 | L002 | Landing: página principal | Información de la app, cómo funciona, FAQ, botón a Google Play | MO-B | P1 | L001 | 2–9 nov |
 
@@ -136,7 +135,6 @@ T001 de cada proyecto la hace primero la persona A; el resto espera a que esté 
 | 24 nov | 014 o 015 sin integrar | Queda apagada (`AI_ENABLED=false` / `RECO_ENABLED=false`) y se entrega como demostración en staging; la 1.0 ya está publicada |
 | 11 nov (H4) | 009 | Pagos registrados y retrasos (queda evidencia + QR); incidencias |
 | 12 nov | 011 push | Notificaciones push (queda lista de avisos dentro de la app) |
-| 14 nov | 016 | Se recorta T010 (trivy y ZAP) y la mutación se limita a precio y disponibilidad; **nunca** contrato, base de datos ni seguridad (T003–T007) |
 | 13 nov | 012 | Documentación extendida y accesibilidad fina; **nunca** el recorrido de punta a punta |
 
 Nunca se recorta: cuenta, publicar, buscar, solicitar/reservar, entrega y devolución con QR, calificar, **reportar contenido y filtro de contenido** (requisito de Google Play para apps con contenido de usuarios), eliminar cuenta (dentro y fuera de la app), política de privacidad y la ruta a Google Play (§1).
@@ -250,7 +248,6 @@ El PDF dice que importes y plazos se fijan en las políticas del servicio. Estos
 | 013 | 9 | 11 |
 | 014 | 8 | 7 |
 | 015 | 10 | 7 |
-| 016 | 12 | — |
-| **Total** | **180** | **168** |
+| **Total** | **168** | **168** |
 
-Landing: L001 (10 tareas) y L002 (10 tareas), ver `landing/specs/`. **Total general: 368 tareas.**
+Landing: L001 (10 tareas) y L002 (10 tareas), ver `landing/specs/`. **Total general: 356 tareas.**

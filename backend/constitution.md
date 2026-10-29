@@ -1,11 +1,6 @@
 # Constitución del Backend — VAIVÉN
 
-<<<<<<< Updated upstream
-> **Versión 1.0.0** · Ratificada el 2026-10-26 · Proyecto: `backend/` (Go + MongoDB)
-=======
 > **Versión 1.2.0** · Ratificada el 2026-10-26 · Enmendada el 2026-10-28 (Cloudinary para imágenes; Art. XII trabajo en paralelo) y el 2026-10-29 (Art. VII: siete categorías de pruebas y pipeline DevSecOps) · Proyecto: `backend/` (Go + MongoDB)
->>>>>>> Stashed changes
->
 > Esta es la máxima autoridad técnica del backend. Si `AGENTS.md`, `memoria.md`, `spec.md`, `plan.md`, `tasks.md`, un agente o una skill la contradicen, **gana la constitución** y el otro archivo debe corregirse.
 > La constitución del móvil (`../mobile/constitution.md`) comparte los Artículos IV y V; ambas deben mantenerse idénticas en esos puntos.
 
@@ -33,6 +28,7 @@ El backend es una **API REST en Go** con persistencia en **MongoDB**. Es la úni
 1. La persistencia es **exclusivamente MongoDB** (versión 7 o superior) mediante el driver oficial `go.mongodb.org/mongo-driver/v2`. Prohibido introducir bases relacionales, ORMs o capas SQL.
 2. MongoDB se ejecuta como **replica set** (de un nodo en desarrollo) para poder usar transacciones cuando una spec las requiera.
 3. El diseño de datos sigue los patrones de documentos de la sección 6 (incrustar vs. referenciar, instantáneas, índices declarados en código).
+4. **Imágenes (enmienda 1.1.0):** los archivos binarios (fotos de objetos y evidencias) se almacenan en **Cloudinary** (capa gratuita). MongoDB guarda solo referencias (`publicId`, ancho, alto, formato, bytes, tipo de entrega), nunca el binario. Los datos de negocio siguen siendo exclusivamente de MongoDB.
 
 ### Art. III — Clean Architecture y regla de dependencia
 1. Capas: `domain` → `usecase` → `adapter` (http, mongo) → `cmd`. **Las dependencias solo apuntan hacia adentro.**
@@ -42,7 +38,7 @@ El backend es una **API REST en Go** con persistencia en **MongoDB**. Es la úni
 
 ### Art. IV — Contrato de API estable y compartido con el móvil
 1. API REST JSON bajo el prefijo `/api/v1`. Endpoints de infraestructura (`/healthz`, `/readyz`) fuera del prefijo.
-2. Campos JSON en `camelCase`; fechas en ISO-8601 UTC (`2026-10-26T15:00:00Z`); identificadores como cadenas.
+2. Campos JSON en `camelCase`; fechas en ISO-8601 UTC (salvo periodos de reserva, Art. V.3) (`2026-10-26T15:00:00Z`); identificadores como cadenas.
 3. Errores siempre con este formato único:
    ```json
    { "error": { "code": "validation_failed", "message": "texto legible en español",
@@ -58,6 +54,7 @@ El backend es una **API REST en Go** con persistencia en **MongoDB**. Es la úni
 1. Moneda única: **MXN**. No existe selección de moneda ni conversión.
 2. Los importes se guardan y transmiten como **enteros en centavos** (`int64`, campo con sufijo `Cents`, p. ej. `amountCents`). Prohibido `float` para dinero.
 3. Todas las fechas se almacenan y transmiten en **UTC**; la presentación en zona horaria local es responsabilidad del cliente.
+   - **Excepción (v1.1.0):** los periodos de reserva (`startDate`, `endDate`) son **fechas de calendario** `YYYY-MM-DD`, inclusivas, interpretadas en `America/Mexico_City` (requiere `time/tzdata`). No se convierten a UTC ni se muestran en otra zona.
 4. Mensajes de error y textos visibles al usuario en **español (es-MX)**; identificadores de código, logs y nombres técnicos en inglés.
 5. VAIVÉN **no ejecuta cobros ni verifica pagos**: el backend solo registra lo acordado y lo reportado.
 
@@ -68,6 +65,7 @@ El backend es una **API REST en Go** con persistencia en **MongoDB**. Es la úni
 4. Datos sensibles (ubicación exacta, conversaciones, evidencias) solo son accesibles a las personas autorizadas; las respuestas públicas exponen únicamente el mínimo necesario.
 5. Los logs **no contienen** datos personales, tokens ni cuerpos de petición completos.
 6. CORS con lista explícita de orígenes; límites de tamaño de cuerpo; tiempos de espera en servidor y cliente HTTP.
+7. El `API secret` de Cloudinary vive solo en el backend. La app sube archivos con **firmas de un solo uso** emitidas por el backend. Las evidencias (entrega, devolución, incidencias) se suben como `authenticated` y solo se entregan mediante URLs firmadas de corta duración a las personas autorizadas.
 
 ### Art. VII — Pruebas y calidad
 1. Toda tarea con lógica incluye pruebas. Mínimo **80 %** de cobertura en `domain` y `usecase`.
@@ -83,11 +81,8 @@ El backend es una **API REST en Go** con persistencia en **MongoDB**. Es la úni
 1. Se prefiere la biblioteca estándar. Una dependencia nueva exige justificación en `plan.md` y un registro en `memoria.md`.
 2. Prohibido construir abstracciones "por si acaso": solo lo que una spec vigente necesita.
 3. Funciones cortas, un propósito por paquete, nombres explícitos.
-<<<<<<< Updated upstream
-=======
 4. **Dependencias previstas** (ya aprobadas, se registran en `memoria.md` al instalarse): `go-playground/validator/v10`, `golang.org/x/crypto` (argon2), `github.com/golang-jwt/jwt/v5`, y **solo para pruebas** `github.com/getkin/kin-openapi` (contrato). Las herramientas `gremlins`, `govulncheck`, `gitleaks`, `trivy`, `k6` y ZAP se ejecutan como binarios o contenedores y **no** entran en `go.mod`. Cloudinary y Expo Push se usan con `net/http` y la biblioteca estándar, **sin SDK**.
->>>>>>> Stashed changes
-
+5. 
 ### Art. IX — Observabilidad
 1. Logs estructurados con `log/slog` (JSON en producción) y un `requestId` por petición, devuelto en el encabezado `X-Request-Id`.
 2. `/healthz` indica que el proceso vive; `/readyz` verifica la conexión a MongoDB.
@@ -103,6 +98,15 @@ El backend es una **API REST en Go** con persistencia en **MongoDB**. Es la úni
 ### Art. XI — Gobernanza y enmiendas
 1. Cambiar la constitución requiere: propuesta escrita, registro en `memoria.md` (sección *Decisiones*), incremento de versión y revisión de coherencia de todos los archivos.
 2. Versionado: **MAJOR** cambia o elimina un principio; **MINOR** agrega un principio o sección; **PATCH** aclara redacción.
+
+### Art. XII — Trabajo en paralelo (4 personas, cada una con su OpenCode)
+1. Cada spec tiene **una persona dueña** (ver `../ROADMAP.md`). Solo el dueño edita el `tasks.md` y el código de su spec; si necesita tocar algo de otra persona, lo avisa antes.
+2. **Contrato primero:** la primera tarea de cada spec publica sus endpoints en `api/paths/<modulo>.yaml` (referenciado desde `api/openapi.yaml`) para que el móvil trabaje contra el contrato sin esperar al código.
+3. **Módulos:** cada funcionalidad es un módulo (`internal/<modulo>/` con sus capas) que se registra con **una sola línea** en `cmd/api/modules.go`. Prohibido editar rutas de otro módulo.
+4. **Puertos compartidos** (`notify.Notifier`, `moderation.Checker`, `chat.Opener`, `images.Service`) se definen una vez con implementación vacía y las specs posteriores los reemplazan sin cambiar a quien los consume.
+5. **Ramas y PR:** una rama por tarea `feat/<spec>-<tarea>` (`feat/005-T003`), PR pequeño (≈ 400 líneas), revisión cruzada por otra persona, `main` siempre verde (lint + pruebas).
+6. **`memoria.md` es solo-anexar:** cada persona agrega líneas nuevas al final de su sección con su etiqueta (`[BE-A]`, `[BE-B]`); ante un conflicto de fusión se conservan ambas.
+7. Mientras una dependencia entre specs no esté lista, se usa el puerto vacío; nunca se duplica ni se copia código de otro módulo.
 
 ---
 
@@ -120,13 +124,18 @@ El backend es una **API REST en Go** con persistencia en **MongoDB**. Es la úni
 | Pruebas | `testing` + `testify` + `testcontainers-go` (módulo mongodb) |
 | Calidad | `gofmt`, `go vet`, `golangci-lint` |
 | Contenedores | Docker + Docker Compose (desarrollo), Dockerfile multi‑etapa |
-| Contrato | OpenAPI 3.1 en `api/openapi.yaml` |
+| Contrato | OpenAPI 3.1 en `api/openapi.yaml` + `api/paths/<modulo>.yaml` |
+| Autenticación | JWT de acceso (`golang-jwt/jwt/v5`) + refresh rotativo; contraseñas con `argon2id` (`x/crypto`) |
+| Imágenes | Cloudinary (capa gratuita), firmas emitidas por el backend, sin SDK |
+| Notificaciones push | API HTTP de Expo Push, sin SDK |
 
 ## 4. Estructura del repositorio
 
 ```
 backend/
 ├─ cmd/api/main.go            # composición e inicio
+├─ cmd/api/modules.go         # lista de módulos registrados (una línea por módulo)
+├─ cmd/admin/                 # utilidades de administración (crear admin, sembrar datos)
 ├─ internal/
 │  ├─ config/                 # lectura y validación de entorno
 │  ├─ domain/                 # entidades, objetos de valor, errores de dominio
@@ -163,6 +172,8 @@ backend/
 7. **Transacciones** solo cuando una operación deba ser atómica entre documentos; se prefiere diseñar para atomicidad de un solo documento.
 8. Borrado lógico (`deletedAt`) o TTL según lo defina cada spec; nunca borrado físico de evidencia o historial sin política escrita.
 9. Dinero: `…Cents` como `int64`; nunca `Decimal128` ni `double`.
+10. Imágenes: objeto `{publicId, width, height, format, bytes, delivery}` con `delivery` = `public` o `authenticated`; máximo 5 por documento. Antes de guardar una referencia se valida que `publicId` pertenezca a la carpeta de la persona que la envía (`vaiven/<env>/<proposito>/<userId>/…`).
+11. Ubicación: los listados públicos solo exponen zona y un punto **aproximado** (coordenadas redondeadas a 2 decimales ≈ 1 km); la ubicación exacta solo se comparte entre las partes de una reserva.
 
 ## 7. Definición de Hecho (DoD) de una tarea
 
