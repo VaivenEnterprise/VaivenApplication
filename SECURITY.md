@@ -33,6 +33,7 @@ Las excepciones solo afectan al nombre. No omiten las revisiones ni los checks d
    - `Validar nombre de rama`
    - `Detectar secretos`
    - `Seguridad de workflows`
+   - `CI monorepo`
 2. Selecciona GitHub Actions como origen esperado de cada comprobación.
 3. Comprueba en Settings que Secret scanning y Push protection estén habilitados para los secretos compatibles de GitHub. Esta configuración no activa esas opciones.
 4. Revisa y aprueba las actualizaciones de Dependabot; no se configura fusión automática.
@@ -43,10 +44,9 @@ La conexión usada para preparar este cambio permite leer las reglas pero no edi
 
 | Componente | Controles previstos al existir código |
 |---|---|
-| `backend/` (Go) | Formato, análisis estático, pruebas, compilación y vulnerabilidades de dependencias con govulncheck. |
-| `mobile/` (Expo/TypeScript) | Instalación con lockfile, lint, tipos, pruebas y revisión de dependencias. |
+| `backend/` (Go) | CI preparada para activarse con go.mod: formato, análisis estático, pruebas unitarias/integración, cobertura, compilación y govulncheck. |
+| `mobile/` (Expo/TypeScript) | CI preparada para activarse con package.json y package-lock.json: instalación reproducible, formato, lint, tipos, pruebas, cobertura y npm audit. |
 | Contenedores e infraestructura | Análisis de imágenes e infraestructura cuando existan Dockerfiles y Terraform u otra definición. |
 | AWS | OIDC con roles IAM limitados por repositorio, rama y entorno; secretos en Secrets Manager y aprobación de producción. |
 
-La futura CI se dividirá por componente, considerando también los archivos compartidos. Los jobs obligatorios deberán producir un resultado incluso si un componente no cambió, para evitar PRs bloqueados por checks que nunca se ejecutan.
-
+La [CI del monorepo](docs/CI_MONOREPO.md) se divide por componente y considera los archivos compartidos. Su check final `CI monorepo` produce un resultado aunque se omita un componente. Sin manifiestos todavía no se ejecutan pruebas de aplicación ni se comprueba su compatibilidad real con los comandos preparados.
